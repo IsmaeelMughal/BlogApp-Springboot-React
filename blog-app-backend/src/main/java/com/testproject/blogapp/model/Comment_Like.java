@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class Comment_Like {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Integer id;
     @ManyToOne
     private Post post;

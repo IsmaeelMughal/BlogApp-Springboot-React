@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class Suggestion {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Integer id;
     private String content;
     @ManyToOne

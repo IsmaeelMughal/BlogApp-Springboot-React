@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class Reported_Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Integer id;
     private String reason;
     @ManyToOne

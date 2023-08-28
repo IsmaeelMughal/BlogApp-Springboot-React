@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Integer id;
     private String content;
     private String image;
