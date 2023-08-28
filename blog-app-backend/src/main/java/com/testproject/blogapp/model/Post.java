@@ -23,6 +23,8 @@ public class Post {
     private String image;
     @Temporal(TemporalType.DATE)
     private Date date;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ManyToOne
     private User user;

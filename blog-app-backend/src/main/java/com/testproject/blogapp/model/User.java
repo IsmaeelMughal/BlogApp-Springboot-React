@@ -22,7 +22,7 @@ public class User {
     private String name;
     private String email;
     private String password;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Role Role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
