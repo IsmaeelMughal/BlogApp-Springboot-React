@@ -1,10 +1,9 @@
 import * as React from "react";
+import { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -12,6 +11,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { BASE_URL, myAxios } from "../services/AxiosHelper";
+import { ToastContainer, toast } from "react-toastify";
 
 function Copyright(props) {
     return (
@@ -22,8 +23,8 @@ function Copyright(props) {
             {...props}
         >
             {"Copyright © "}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
+            <Link color="inherit" href="/">
+                Blog App
             </Link>{" "}
             {new Date().getFullYear()}
             {"."}
@@ -31,22 +32,48 @@ function Copyright(props) {
     );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-    const handleSubmit = (event) => {
+    const [error, setError] = useState({ message: "" });
+
+    const [userDetails, setUserDetails] = useState({
+        name: "",
+        email: "",
+        password: "",
+    });
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get("email"),
-            password: data.get("password"),
-        });
+
+        console.log(userDetails);
+
+        try {
+            const res = await myAxios.post(`${BASE_URL}/api/auth/register`, {
+                name: userDetails.name,
+                email: userDetails.email,
+                password: userDetails.password,
+                role: "ROLE_USER",
+            });
+            console.log(res);
+            const jwt = res.data.token;
+            if (jwt === "") {
+                setError({
+                    message: "Email Already in Use!!!",
+                });
+            } else {
+                toast("Registered Successfully!!!");
+            }
+        } catch (error) {
+            setError({
+                message: "Server is busy!!!",
+            });
+        }
     };
 
     return (
         <ThemeProvider theme={defaultTheme}>
+            <ToastContainer />
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
@@ -65,30 +92,24 @@ export default function SignUp() {
                     </Typography>
                     <Box
                         component="form"
-                        noValidate
                         onSubmit={handleSubmit}
                         sx={{ mt: 3 }}
                     >
                         <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    autoComplete="given-name"
-                                    name="firstName"
-                                    required
-                                    fullWidth
-                                    id="firstName"
-                                    label="First Name"
-                                    autoFocus
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid item xs={12}>
                                 <TextField
                                     required
                                     fullWidth
-                                    id="lastName"
-                                    label="Last Name"
-                                    name="lastName"
+                                    id="name"
+                                    label="name"
+                                    name="name"
                                     autoComplete="family-name"
+                                    onChange={(e) =>
+                                        setUserDetails((prev) => ({
+                                            ...prev,
+                                            name: e.target.value,
+                                        }))
+                                    }
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -97,8 +118,15 @@ export default function SignUp() {
                                     fullWidth
                                     id="email"
                                     label="Email Address"
+                                    type="email"
                                     name="email"
                                     autoComplete="email"
+                                    onChange={(e) =>
+                                        setUserDetails((prev) => ({
+                                            ...prev,
+                                            email: e.target.value,
+                                        }))
+                                    }
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -109,20 +137,24 @@ export default function SignUp() {
                                     label="Password"
                                     type="password"
                                     id="password"
+                                    onChange={(e) =>
+                                        setUserDetails((prev) => ({
+                                            ...prev,
+                                            password: e.target.value,
+                                        }))
+                                    }
                                     autoComplete="new-password"
                                 />
                             </Grid>
-                            <Grid item xs={12}>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            value="allowExtraEmails"
-                                            color="primary"
-                                        />
-                                    }
-                                    label="I want to receive inspiration, marketing promotions and updates via email."
-                                />
-                            </Grid>
+                        </Grid>
+                        <Grid>
+                            {error.message === "" ? (
+                                ""
+                            ) : (
+                                <p className="text-danger font-weight-bold my-2">
+                                    {error.message}
+                                </p>
+                            )}
                         </Grid>
                         <Button
                             type="submit"
@@ -134,7 +166,7 @@ export default function SignUp() {
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="#" variant="body2">
+                                <Link href="/" variant="body2">
                                     Already have an account? Sign in
                                 </Link>
                             </Grid>

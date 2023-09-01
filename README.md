@@ -10,6 +10,8 @@ mysql-connector-j                 ->  to connect with mysql database
 
 lombok                            ->  to reduce boiler plate code
 
+cloudinary-http44							-> to upload Images on cloud
+
 
 
 
@@ -18,3 +20,11 @@ lombok                            ->  to reduce boiler plate code
 
 // Front-End dependencies
 @mui/material, @mui/icons-material, @emotion/styled, @emotion/react
+
+react-router-dom
+
+axios
+
+react-quill
+
+html-react-parser

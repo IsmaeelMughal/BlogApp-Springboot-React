@@ -3,8 +3,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -12,6 +10,11 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { BASE_URL, myAxios } from "../services/AxiosHelper";
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
+import "react-toastify/dist/ReactToastify.css";
 
 function Copyright(props) {
     return (
@@ -22,8 +25,8 @@ function Copyright(props) {
             {...props}
         >
             {"Copyright © "}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
+            <Link color="inherit" href="/">
+                Blog App
             </Link>{" "}
             {new Date().getFullYear()}
             {"."}
@@ -31,22 +34,50 @@ function Copyright(props) {
     );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-    const handleSubmit = (event) => {
+    const navigate = useNavigate();
+    const handleSubmit = async (event) => {
         event.preventDefault();
+        var token = null;
         const data = new FormData(event.currentTarget);
         console.log({
             email: data.get("email"),
             password: data.get("password"),
         });
+
+        await myAxios
+            .post(`${BASE_URL}/api/auth/authenticate`, {
+                email: data.get("email"),
+                password: data.get("password"),
+            })
+            .then((response) => response.data)
+            .then((result) => {
+                token = result;
+            })
+            .catch((ex) => {
+                toast("Invalid Credentials");
+            });
+        if (token != null && token !== "") {
+            localStorage.setItem("token", JSON.stringify(token.token));
+            localStorage.setItem("role", JSON.stringify(token.role));
+            toast(token.role);
+            if (token.role === "ROLE_USER") {
+                navigate("/user");
+            } else if (token.role === "ROLE_ADMIN") {
+                navigate("/admin");
+            } else if (token.role === "ROLE_MODERATOR") {
+                navigate("/moderator");
+            }
+        } else {
+            toast("Invalid Credentials");
+        }
     };
 
     return (
         <ThemeProvider theme={defaultTheme}>
+            <ToastContainer />
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
@@ -89,12 +120,7 @@ export default function SignIn() {
                             id="password"
                             autoComplete="current-password"
                         />
-                        <FormControlLabel
-                            control={
-                                <Checkbox value="remember" color="primary" />
-                            }
-                            label="Remember me"
-                        />
+
                         <Button
                             type="submit"
                             fullWidth
@@ -104,13 +130,8 @@ export default function SignIn() {
                             Sign In
                         </Button>
                         <Grid container>
-                            <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    Forgot password?
-                                </Link>
-                            </Grid>
                             <Grid item>
-                                <Link href="#" variant="body2">
+                                <Link href="/signup" variant="body2">
                                     {"Don't have an account? Sign Up"}
                                 </Link>
                             </Grid>
