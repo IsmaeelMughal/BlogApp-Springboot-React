@@ -28,16 +28,15 @@ public class AuthenticationController {
     {
         String email = otpRequestBody.get("email");
         String otp = otpRequestBody.get("otp");
-        System.out.println("========");
         return service.verifyOtp(email, Integer.parseInt(otp));
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(
+    public ResponseDTO<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
     )
     {
-        return ResponseEntity.ok(service.authenticate(request));
+        return service.authenticate(request);
     }
 
 }

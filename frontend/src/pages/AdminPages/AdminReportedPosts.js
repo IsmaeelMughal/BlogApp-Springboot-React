@@ -9,7 +9,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { BASE_URL, myAxios } from "../../services/AxiosHelper";
 import { ToastContainer, toast } from "react-toastify";
-import { IconButton, Typography } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { Visibility, Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 

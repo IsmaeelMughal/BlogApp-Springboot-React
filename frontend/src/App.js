@@ -27,11 +27,13 @@ import AdminReportedPosts from "./pages/AdminPages/AdminReportedPosts";
 import AdminManageSuggestions from "./pages/AdminPages/AdminManageSuggestions";
 import AdminManageReportedComments from "./pages/AdminPages/AdminManageReportedComments";
 import AdminSinglePostDetails from "./pages/AdminPages/AdminSinglePostDetails";
+import OtpVerification from "./components/OtpVerification";
 
 function App() {
     return (
         <Routes>
             <Route path="/" element={<SignIn />} />
+            <Route path="/otpVerification" element={<OtpVerification />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/user" element={<UserLayout />}>
                 <Route index element={<UserHome />} />

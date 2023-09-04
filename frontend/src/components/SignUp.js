@@ -13,6 +13,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { BASE_URL, myAxios } from "../services/AxiosHelper";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
     return (
@@ -35,6 +36,7 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignUp() {
+    const navigate = useNavigate();
     const [userDetails, setUserDetails] = useState({
         name: "",
         email: "",
@@ -44,29 +46,29 @@ export default function SignUp() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        console.log(userDetails);
-
-        // try {
-        //     const res = await myAxios.post(`${BASE_URL}/api/auth/register`, {
-        //         name: userDetails.name,
-        //         email: userDetails.email,
-        //         password: userDetails.password,
-        //         role: "ROLE_USER",
-        //     });
-        //     console.log(res);
-        //     const jwt = res.data.token;
-        //     if (jwt === "") {
-        //         setError({
-        //             message: "Email Already in Use!!!",
-        //         });
-        //     } else {
-        //         toast("Registered Successfully!!!");
-        //     }
-        // } catch (error) {
-        //     setError({
-        //         message: "Server is busy!!!",
-        //     });
-        // }
+        try {
+            const res = await myAxios.post(`${BASE_URL}/api/auth/register`, {
+                name: userDetails.name,
+                email: userDetails.email,
+                password: userDetails.password,
+                role: "ROLE_USER",
+            });
+            if (res.status === 200) {
+                if (res.data.status === "OK") {
+                    localStorage.setItem(
+                        "email",
+                        JSON.stringify(userDetails.email)
+                    );
+                    navigate("/otpVerification");
+                } else {
+                    toast(res.data.message);
+                }
+            } else {
+                toast(res.data.message);
+            }
+        } catch (error) {
+            toast("Regestration Failed!!!");
+        }
     };
 
     return (

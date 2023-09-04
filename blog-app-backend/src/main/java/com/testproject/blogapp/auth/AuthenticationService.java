@@ -7,6 +7,7 @@ import com.testproject.blogapp.model.UserAccountStatus;
 import com.testproject.blogapp.model.UserEntity;
 import com.testproject.blogapp.repository.UserRepository;
 import com.testproject.blogapp.service.MailService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -73,7 +74,6 @@ public class AuthenticationService {
         }
         else {
             UserEntity userEntity = new UserEntity();
-            if(userEntity.getStatus() == UserAccountStatus.VERIFIED)
             userEntity.setName(request.getName());
             userEntity.setRole(Role.valueOf(request.getRole()));
             userEntity.setEmail(request.getEmail());
@@ -95,20 +95,33 @@ public class AuthenticationService {
         }
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .role(user.getRole().name())
-                .build();
+    public ResponseDTO<AuthenticationResponse> authenticate(AuthenticationRequest request) {
+        String email = request.getEmail();;
+        String password = request.getPassword();
+
+        Optional<UserEntity> optionalUserEntity = userRepository.findByEmail(email);
+        if(optionalUserEntity.isEmpty())
+        {
+            return new ResponseDTO<>(null, null, HttpStatus.BAD_REQUEST, "Invalid Credentials!!!");
+        }
+        try {
+            UserEntity userEntity = optionalUserEntity.get();
+            if(userEntity.getStatus()==UserAccountStatus.UNVERIFIED)
+            {
+                return new ResponseDTO<>(null, null, HttpStatus.BAD_REQUEST, "Invalid Credentials!!!");
+            }
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+            var jwtToken = jwtService.generateToken(userEntity);
+            return new ResponseDTO<>(null, new AuthenticationResponse(
+                    jwtToken,
+                    userEntity.getRole().name()
+            ), HttpStatus.OK, "Authenticated Successfully!!!");
+        }
+        catch (Exception e)
+        {
+            return new ResponseDTO<>(null, null, HttpStatus.BAD_REQUEST, "Invalid Credentials!!!");
+        }
+
     }
 
     public ResponseDTO<String> verifyOtp(String email, int otp) {

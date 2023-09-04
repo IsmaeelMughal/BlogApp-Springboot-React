@@ -34,3 +34,5 @@ html-react-parser
 mdb-react-ui-kit
 
 @fortawesome/fontawesome-free
+
+react-otp-input

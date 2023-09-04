@@ -42,36 +42,39 @@ export default function SignIn() {
         event.preventDefault();
         var token = null;
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get("email"),
-            password: data.get("password"),
-        });
 
-        await myAxios
-            .post(`${BASE_URL}/api/auth/authenticate`, {
-                email: data.get("email"),
-                password: data.get("password"),
-            })
-            .then((response) => response.data)
-            .then((result) => {
-                token = result;
-            })
-            .catch((ex) => {
-                toast("Invalid Credentials");
-            });
-        if (token != null && token !== "") {
-            localStorage.setItem("token", JSON.stringify(token.token));
-            localStorage.setItem("role", JSON.stringify(token.role));
-            toast(token.role);
-            if (token.role === "ROLE_USER") {
-                navigate("/user");
-            } else if (token.role === "ROLE_ADMIN") {
-                navigate("/admin");
-            } else if (token.role === "ROLE_MODERATOR") {
-                navigate("/moderator");
+        try {
+            const res = await myAxios.post(
+                `${BASE_URL}/api/auth/authenticate`,
+                {
+                    email: data.get("email"),
+                    password: data.get("password"),
+                }
+            );
+            if (res.status === 200) {
+                if (res.data.status === "OK") {
+                    localStorage.setItem(
+                        "token",
+                        JSON.stringify(res.data.data.token)
+                    );
+                    localStorage.setItem(
+                        "role",
+                        JSON.stringify(res.data.data.role)
+                    );
+                    if (res.data.data.role === "ROLE_USER") {
+                        navigate("/user");
+                    } else if (res.data.data.role === "ROLE_ADMIN") {
+                        navigate("/admin");
+                    } else if (res.data.data.role === "ROLE_MODERATOR") {
+                        navigate("/moderator");
+                    }
+                    toast("Login Successfull!!!");
+                }
+            } else {
+                toast("Server is Busy Please Try Again Later!!!");
             }
-        } else {
-            toast("Invalid Credentials");
+        } catch {
+            toast("Server is Busy Please Try Again Later!!!");
         }
     };
 
