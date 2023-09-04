@@ -9,7 +9,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { BASE_URL, myAxios } from "../../services/AxiosHelper";
 import { ToastContainer, toast } from "react-toastify";
-import { IconButton } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
 import { Visibility, Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
@@ -33,7 +33,7 @@ export default function ModeratorReportedPosts() {
                 if (res.status === 200) {
                     console.log(res.data.data);
                     setRows(res.data.data);
-                    if (rows.length === 0) {
+                    if (res.data.data.length === 0) {
                         toast("No Reported Post!!!");
                     } else {
                         toast("All Reported Posts!!!");
@@ -49,7 +49,7 @@ export default function ModeratorReportedPosts() {
     }, []);
 
     return (
-        <div className="container">
+        <div className="container my-5">
             <ToastContainer />
             <TableContainer component={Paper} className="my-5">
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -66,6 +66,9 @@ export default function ModeratorReportedPosts() {
                             </TableCell>
                             <TableCell align="right">
                                 <h5>Number of Reports</h5>
+                            </TableCell>
+                            <TableCell align="right">
+                                <h5>Number of Likes</h5>
                             </TableCell>
                             <TableCell align="right">
                                 <h5>Action</h5>
@@ -91,6 +94,9 @@ export default function ModeratorReportedPosts() {
                                 <TableCell align="right">{row.date}</TableCell>
                                 <TableCell align="right">
                                     {row.numberOfReports}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {row.numberOfLikes}
                                 </TableCell>
                                 <TableCell align="right">
                                     <div>
@@ -122,12 +128,7 @@ export default function ModeratorReportedPosts() {
                                                                 },
                                                             }
                                                         );
-                                                    console.log(res);
                                                     if (res.status === 200) {
-                                                        console.log(
-                                                            res.data.data
-                                                        );
-
                                                         const newRows =
                                                             rows.filter(
                                                                 (post) => {
@@ -141,9 +142,6 @@ export default function ModeratorReportedPosts() {
                                                                 }
                                                             );
                                                         setRows(newRows);
-                                                        // navigate(
-                                                        //     "/moderator/reportedPosts"
-                                                        // );
                                                         toast(
                                                             "Post Deleted Successfully!!!"
                                                         );

@@ -1,41 +1,98 @@
 package com.testproject.blogapp.auth;
 
 import com.testproject.blogapp.config.JwtService;
+import com.testproject.blogapp.dto.ResponseDTO;
 import com.testproject.blogapp.model.Role;
+import com.testproject.blogapp.model.UserAccountStatus;
 import com.testproject.blogapp.model.UserEntity;
 import com.testproject.blogapp.repository.UserRepository;
+import com.testproject.blogapp.service.MailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.Random;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final MailService mailService;
 
-    public AuthenticationResponse register(RegisterRequest request) {
-        var user = UserEntity.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.valueOf(request.getRole()))
-                .build();
-
-        if(repository.findByEmail(user.getEmail()).isPresent())
-        {
-            return AuthenticationResponse.builder().token("").role("").build();
+    private Integer generateRandomOtp()
+    {
+        // Define the length of the OTP
+        int otpLength = 6;
+        // Create a Random object
+        Random random = new Random();
+        // Generate the OTP
+        StringBuilder otp = new StringBuilder();
+        for (int i = 0; i < otpLength; i++) {
+            otp.append(random.nextInt(10)); // Generate a random digit (0-9)
         }
-        repository.save(user);
-        var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .role(user.getRole().name())
-                .build();
+        // Print the OTP
+       return Integer.parseInt(String.valueOf(otp));
+    }
+
+    public ResponseDTO<String> register(RegisterRequest request) {
+        Optional<UserEntity> optionalUserEntity = userRepository.findByEmail(request.getEmail());
+        Integer randomOtp = generateRandomOtp();
+        if (optionalUserEntity.isPresent())
+        {
+            UserEntity userEntity = optionalUserEntity.get();
+            if(userEntity.getStatus() == UserAccountStatus.VERIFIED)
+            {
+                return new ResponseDTO<>(null, null, HttpStatus.BAD_REQUEST, "Email Already Exists!!!");
+            }
+            userEntity.setName(request.getName());
+            userEntity.setRole(Role.valueOf(request.getRole()));
+            userEntity.setEmail(request.getEmail());
+            userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
+            userEntity.setStatus(UserAccountStatus.UNVERIFIED);
+            userEntity.setOtp(randomOtp);
+            // Get the current LocalDateTime
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            // Add 15 minutes to the current LocalDateTime
+            LocalDateTime expireTime = currentDateTime.plusMinutes(15);
+            userEntity.setOtpExpiration(expireTime);
+
+            if(!mailService.sendVerificationEmail(request.getEmail(), randomOtp))
+            {
+                return new ResponseDTO<>(null, null, HttpStatus.BAD_GATEWAY,"Failed To send Email!!!");
+            }
+            userRepository.save(userEntity);
+            return new ResponseDTO<>(null, null, HttpStatus.OK, "A verification Email is sent on your Email!!!");
+        }
+        else {
+            UserEntity userEntity = new UserEntity();
+            if(userEntity.getStatus() == UserAccountStatus.VERIFIED)
+            userEntity.setName(request.getName());
+            userEntity.setRole(Role.valueOf(request.getRole()));
+            userEntity.setEmail(request.getEmail());
+            userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
+            userEntity.setStatus(UserAccountStatus.UNVERIFIED);
+            userEntity.setOtp(randomOtp);
+            // Get the current LocalDateTime
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            // Add 15 minutes to the current LocalDateTime
+            LocalDateTime expireTime = currentDateTime.plusMinutes(15);
+            userEntity.setOtpExpiration(expireTime);
+
+            if(!mailService.sendVerificationEmail(request.getEmail(), randomOtp))
+            {
+                return new ResponseDTO<>(null, null, HttpStatus.BAD_GATEWAY,"Failed To send Email!!!");
+            }
+            userRepository.save(userEntity);
+            return new ResponseDTO<>(null, null, HttpStatus.OK, "A verification Email is sent on your Email!!!");
+        }
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -45,12 +102,38 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail())
+        var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .role(user.getRole().name())
                 .build();
+    }
+
+    public ResponseDTO<String> verifyOtp(String email, int otp) {
+        Optional<UserEntity> optionalUserEntity = userRepository.findByEmail(email);
+        if (optionalUserEntity.isEmpty())
+        {
+            return new ResponseDTO<>(null, null, HttpStatus.BAD_REQUEST, "Email Does Not Exists Please Register First!!!");
+        }
+        UserEntity user = optionalUserEntity.get();
+        if(user.getOtp() == otp)
+        {
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            LocalDateTime otpExpiration = user.getOtpExpiration();
+            boolean isExpired = currentDateTime.isAfter(otpExpiration);
+            if(isExpired)
+            {
+                return new ResponseDTO<>(null, null, HttpStatus.BAD_REQUEST, "OTP expired Please register again!!!");
+            }
+
+            user.setStatus(UserAccountStatus.VERIFIED);
+            userRepository.save(user);
+            return new ResponseDTO<>(null, null, HttpStatus.OK, "Email Verified Successfully!!!");
+        }
+        else {
+            return new ResponseDTO<>(null, null, HttpStatus.BAD_REQUEST, "Invalid OTP!!!");
+        }
     }
 }

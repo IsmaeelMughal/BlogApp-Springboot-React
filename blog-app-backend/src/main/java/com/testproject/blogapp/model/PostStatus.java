@@ -1,6 +1,6 @@
 package com.testproject.blogapp.model;
 
-public enum Status {
+public enum PostStatus {
     APPROVED,
     UNAPPROVED
 }

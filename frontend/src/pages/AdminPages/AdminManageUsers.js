@@ -55,9 +55,6 @@ function AdminManageUsers() {
                                 <h5>Email</h5>
                             </TableCell>
                             <TableCell align="right">
-                                <h5>Role</h5>
-                            </TableCell>
-                            <TableCell align="right">
                                 <h5>Action</h5>
                             </TableCell>
                         </TableRow>
@@ -77,7 +74,6 @@ function AdminManageUsers() {
                                 </TableCell>
                                 <TableCell align="right">{row.name}</TableCell>
                                 <TableCell align="right">{row.email}</TableCell>
-                                <TableCell align="right">{row.role}</TableCell>
                                 <TableCell align="right">
                                     <div>
                                         <IconButton

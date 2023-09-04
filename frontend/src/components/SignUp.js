@@ -35,8 +35,6 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-    const [error, setError] = useState({ message: "" });
-
     const [userDetails, setUserDetails] = useState({
         name: "",
         email: "",
@@ -48,27 +46,27 @@ export default function SignUp() {
 
         console.log(userDetails);
 
-        try {
-            const res = await myAxios.post(`${BASE_URL}/api/auth/register`, {
-                name: userDetails.name,
-                email: userDetails.email,
-                password: userDetails.password,
-                role: "ROLE_USER",
-            });
-            console.log(res);
-            const jwt = res.data.token;
-            if (jwt === "") {
-                setError({
-                    message: "Email Already in Use!!!",
-                });
-            } else {
-                toast("Registered Successfully!!!");
-            }
-        } catch (error) {
-            setError({
-                message: "Server is busy!!!",
-            });
-        }
+        // try {
+        //     const res = await myAxios.post(`${BASE_URL}/api/auth/register`, {
+        //         name: userDetails.name,
+        //         email: userDetails.email,
+        //         password: userDetails.password,
+        //         role: "ROLE_USER",
+        //     });
+        //     console.log(res);
+        //     const jwt = res.data.token;
+        //     if (jwt === "") {
+        //         setError({
+        //             message: "Email Already in Use!!!",
+        //         });
+        //     } else {
+        //         toast("Registered Successfully!!!");
+        //     }
+        // } catch (error) {
+        //     setError({
+        //         message: "Server is busy!!!",
+        //     });
+        // }
     };
 
     return (
@@ -147,15 +145,7 @@ export default function SignUp() {
                                 />
                             </Grid>
                         </Grid>
-                        <Grid>
-                            {error.message === "" ? (
-                                ""
-                            ) : (
-                                <p className="text-danger font-weight-bold my-2">
-                                    {error.message}
-                                </p>
-                            )}
-                        </Grid>
+
                         <Button
                             type="submit"
                             fullWidth

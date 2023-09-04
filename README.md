@@ -2,15 +2,17 @@
 
 // Dependencies in backend pom.xml
 
-spring-boot-starter-data-jpa      ->  to connect with JPA and maintain persistance
+spring-boot-starter-data-jpa       ->  to connect with JPA and maintain persistance
 
-spring-boot-starter-web           ->  to add web dependency and making responses
+spring-boot-starter-web            ->  to add web dependency and making responses
 
-mysql-connector-j                 ->  to connect with mysql database
+mysql-connector-j                   ->  to connect with mysql database
 
-lombok                            ->  to reduce boiler plate code
+lombok                                  ->  to reduce boiler plate code
 
-cloudinary-http44							-> to upload Images on cloud
+cloudinary-http44					-> to upload Images on cloud
+
+spring-boot-starter-mail 			-> To send Email For Verification
 
 
 
@@ -28,3 +30,7 @@ axios
 react-quill
 
 html-react-parser
+
+mdb-react-ui-kit
+
+@fortawesome/fontawesome-free

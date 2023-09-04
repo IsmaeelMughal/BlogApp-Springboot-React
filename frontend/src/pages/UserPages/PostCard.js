@@ -2,13 +2,18 @@ import React from "react";
 import { Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-function PostCard({ postData }) {
+function PostCard({ postData, currentUser }) {
     return (
         <div>
             <div className="card my-5">
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {postData.status}
-                </span>
+                {currentUser.id === postData.postedBy.id ? (
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {postData.status}
+                    </span>
+                ) : (
+                    ""
+                )}
+
                 <Image
                     className="card-img-top"
                     src={postData.image}

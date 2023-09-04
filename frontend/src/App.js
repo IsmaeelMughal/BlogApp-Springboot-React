@@ -1,5 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
+import "mdb-react-ui-kit/dist/css/mdb.min.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 
@@ -18,6 +20,13 @@ import ModeratorSingleReportedPost from "./pages/ModeratorPages/ModeratorSingleR
 import AdminManageUsers from "./pages/AdminPages/AdminManageUsers";
 import AdminAddModerator from "./pages/AdminPages/AdminAddModerator";
 import AdminManageModerator from "./pages/AdminPages/AdminManageModerator";
+import UserSuggestionPage from "./pages/UserPages/UserSuggestionPage";
+import EditPost from "./pages/UserPages/EditPost";
+import AdminShowAllPosts from "./pages/AdminPages/AdminShowAllPosts";
+import AdminReportedPosts from "./pages/AdminPages/AdminReportedPosts";
+import AdminManageSuggestions from "./pages/AdminPages/AdminManageSuggestions";
+import AdminManageReportedComments from "./pages/AdminPages/AdminManageReportedComments";
+import AdminSinglePostDetails from "./pages/AdminPages/AdminSinglePostDetails";
 
 function App() {
     return (
@@ -29,6 +38,8 @@ function App() {
                 <Route path="newpost" element={<NewPost />} />
                 <Route path="mypost" element={<UserPosts />} />
                 <Route path="post/:postId" element={<UserSinglePost />} />
+                <Route path="suggestions" element={<UserSuggestionPage />} />
+                <Route path="editPost/:postId" element={<EditPost />} />
             </Route>
 
             <Route path="/admin" element={<AdminLayout />}>
@@ -38,6 +49,23 @@ function App() {
                 <Route
                     path="manageModerator"
                     element={<AdminManageModerator />}
+                />
+                <Route path="showAllPosts" element={<AdminShowAllPosts />} />
+                <Route
+                    path="showReportedPosts"
+                    element={<AdminReportedPosts />}
+                />
+                <Route
+                    path="manageSuggestions"
+                    element={<AdminManageSuggestions />}
+                />
+                <Route
+                    path="manageReportedComments"
+                    element={<AdminManageReportedComments />}
+                />
+                <Route
+                    path="post/:postId"
+                    element={<AdminSinglePostDetails />}
                 />
             </Route>
 

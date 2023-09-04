@@ -22,13 +22,13 @@ public class UserController {
     public ResponseDTO<UserEntityDTO> getUserDetailsFromToken(@RequestHeader("Authorization") String authHeader)
     {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return new ResponseDTO<>(null, HttpStatus.UNAUTHORIZED, "You are not authorized");
+            return new ResponseDTO<>(null, null, HttpStatus.UNAUTHORIZED, "You are not authorized");
         }
+        UserEntityDTO userEntityDTO = userService.getUserDetailsFromToken(authHeader);
         try {
-            UserEntityDTO userEntityDTO = userService.getUserDetailsFromToken(authHeader);
-            return new ResponseDTO<>(userEntityDTO, HttpStatus.OK, "List of Posts By this user");
+            return new ResponseDTO<>(userEntityDTO, userEntityDTO, HttpStatus.OK, "List of Posts By this user");
         } catch (Exception e) {
-            return new ResponseDTO<>(null, HttpStatus.INTERNAL_SERVER_ERROR, "You are not authorized");
+            return new ResponseDTO<>(userEntityDTO, null, HttpStatus.INTERNAL_SERVER_ERROR, "You are not authorized");
         }
     }
 
@@ -36,13 +36,15 @@ public class UserController {
     @GetMapping("/user/posts")
     public ResponseDTO<List<PostEntityDTO>> getUserSpecificPosts(@RequestHeader("Authorization") String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return new ResponseDTO<>(null, HttpStatus.UNAUTHORIZED, "You are not authorized");
+            return new ResponseDTO<>(null, null, HttpStatus.UNAUTHORIZED, "You are not authorized");
         }
+        UserEntityDTO userEntityDTO = userService.getUserDetailsFromToken(authHeader);
+
         try {
             List<PostEntityDTO> postEntityDTOS = postService.getUserPosts(authHeader);
-            return new ResponseDTO<>(postEntityDTOS, HttpStatus.OK, "List of Posts By this user");
+            return new ResponseDTO<>(userEntityDTO, postEntityDTOS, HttpStatus.OK, "List of Posts By this user");
         } catch (Exception e) {
-            return new ResponseDTO<>(null, HttpStatus.INTERNAL_SERVER_ERROR, "You are not authorized");
+            return new ResponseDTO<>(userEntityDTO, null, HttpStatus.INTERNAL_SERVER_ERROR, "You are not authorized");
         }
     }
 }

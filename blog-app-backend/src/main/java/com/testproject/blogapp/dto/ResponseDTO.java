@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @Setter
 public class ResponseDTO<T> {
+    private UserEntityDTO currentUser;
     private T data;
     private HttpStatus status;
     private String message;

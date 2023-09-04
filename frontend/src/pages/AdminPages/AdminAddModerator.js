@@ -157,7 +157,7 @@ function AdminAddModerator() {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign Up
+                            Add Moderator
                         </Button>
                     </Box>
                 </Box>

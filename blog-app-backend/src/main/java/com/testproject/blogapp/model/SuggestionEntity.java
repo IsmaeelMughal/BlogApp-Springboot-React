@@ -3,25 +3,26 @@ package com.testproject.blogapp.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Set;
 
 @Entity
 @Table(name = "suggestion", schema = "blog_app")
 @Getter
 @Setter
-
 public class SuggestionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
     private Integer id;
     @Basic
-    @Column(name = "content")
-    private String content;
-
-    @OneToMany(mappedBy = "suggestionBySuggestionId", cascade = CascadeType.ALL)
-    private Set<SuggestionReplyEntity> suggestionRepliesById;
-
+    @Column(name = "content", length = 1000)
+    private String suggestion;
+    @Basic
+    @Column(name = "reply", length = 1000)
+    private String reply;
+    @Basic
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private SuggestionStatus status;
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity userByUserId;
@@ -37,13 +38,6 @@ public class SuggestionEntity {
         this.id = id;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -53,7 +47,6 @@ public class SuggestionEntity {
         SuggestionEntity that = (SuggestionEntity) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (content != null ? !content.equals(that.content) : that.content != null) return false;
 
         return true;
     }
@@ -61,7 +54,6 @@ public class SuggestionEntity {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (content != null ? content.hashCode() : 0);
         return result;
     }
 

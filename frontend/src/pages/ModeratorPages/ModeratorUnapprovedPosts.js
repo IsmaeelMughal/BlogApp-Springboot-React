@@ -22,7 +22,7 @@ function ModeratorUnapprovedPosts() {
                 if (res.status === 200) {
                     console.log(res.data.data);
                     setListOfPosts(res.data.data);
-                    if (listOfPosts.length === 0) {
+                    if (res.data.data.length === 0) {
                         toast("No Post to Approve!!!");
                     } else {
                         toast("All unApproved Posts!!!");

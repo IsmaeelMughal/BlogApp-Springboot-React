@@ -1,5 +1,6 @@
 package com.testproject.blogapp.config;
 
+import com.testproject.blogapp.utils.Constants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");   // this header contain JWT
+        final String authHeader = request.getHeader(Constants.AUTHORIZATION);   // this header contain JWT
         final String jwt;
         final String userEmail;
         // Check for JWT existence

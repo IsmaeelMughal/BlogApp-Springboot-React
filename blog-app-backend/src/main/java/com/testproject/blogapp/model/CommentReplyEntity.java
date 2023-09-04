@@ -19,7 +19,7 @@ public class CommentReplyEntity {
     @Column(name = "id")
     private Integer id;
     @Basic
-    @Column(name = "content")
+    @Column(name = "content", length = 1000)
     private String content;
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

@@ -1,14 +1,12 @@
 package com.testproject.blogapp.controller;
 
-import com.testproject.blogapp.config.JwtService;
 import com.testproject.blogapp.dto.PostEntityDTO;
-import com.testproject.blogapp.dto.ReportedPostDTO;
 import com.testproject.blogapp.dto.ResponseDTO;
-import com.testproject.blogapp.model.UserEntity;
-import com.testproject.blogapp.repository.UserRepository;
+import com.testproject.blogapp.dto.UserEntityDTO;
 import com.testproject.blogapp.service.PostLikeService;
 import com.testproject.blogapp.service.PostReportService;
 import com.testproject.blogapp.service.PostService;
+import com.testproject.blogapp.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +23,7 @@ public class PostController {
     private final PostService postService;
     private final PostLikeService postLikeService;
     private final PostReportService postReportService;
+    private final UserService userService;
 
     @PostMapping(value = "/user/addPost")
     public ResponseEntity<String> addPost(
@@ -43,23 +43,34 @@ public class PostController {
         }
     }
 
+    @PatchMapping("/user/editPost/{postId}")
+    public ResponseDTO<String> editPost(@PathVariable("postId") Integer postId,
+                                        @RequestBody Map<String, String> postData,
+                                        @RequestHeader("Authorization") String authHeader)
+    {
+        String title = postData.get("title");
+        String content = postData.get("content");
+        return postService.editPost(authHeader, postId, title, content);
+    }
+
     @GetMapping("/post/{id}")
     public ResponseDTO<PostEntityDTO> getPostById(@RequestHeader("Authorization") String authHeader,
                                                   @PathVariable("id") Integer postId)
     {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return new ResponseDTO<>(null, HttpStatus.UNAUTHORIZED, "You are not authorized");
+            return new ResponseDTO<>(null, null, HttpStatus.UNAUTHORIZED, "You are not authorized");
         }
+        UserEntityDTO userEntityDTO = userService.getUserDetailsFromToken(authHeader);
         try {
             PostEntityDTO postEntity = postService.getPost(postId);
-            return new ResponseDTO<>(postEntity, HttpStatus.OK, "List of Posts By this user");
+            return new ResponseDTO<>(userEntityDTO, postEntity, HttpStatus.OK, "List of Posts By this user");
         }
         catch (IllegalArgumentException illegalArgumentException)
         {
-            return new ResponseDTO<>(null, HttpStatus.BAD_REQUEST, "Post Does not exists");
+            return new ResponseDTO<>(userEntityDTO,null, HttpStatus.BAD_REQUEST, "Post Does not exists");
         }
         catch (Exception e) {
-            return new ResponseDTO<>(null, HttpStatus.INTERNAL_SERVER_ERROR, "You are not authorized");
+            return new ResponseDTO<>(userEntityDTO,null, HttpStatus.INTERNAL_SERVER_ERROR, "You are not authorized");
         }
     }
 
@@ -67,13 +78,14 @@ public class PostController {
     public ResponseDTO<List<PostEntityDTO>> getAllApprovedPosts(@RequestHeader("Authorization") String authHeader)
     {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return new ResponseDTO<>(null, HttpStatus.UNAUTHORIZED, "You are not authorized");
+            return new ResponseDTO<>(null, null, HttpStatus.UNAUTHORIZED, "You are not authorized");
         }
+        UserEntityDTO userEntityDTO = userService.getUserDetailsFromToken(authHeader);
         try {
             List<PostEntityDTO> postEntityDTOS = postService.getAllApprovedPosts();
-            return new ResponseDTO<>(postEntityDTOS, HttpStatus.OK, "List of Posts By this user");
+            return new ResponseDTO<>(userEntityDTO, postEntityDTOS, HttpStatus.OK, "List of Posts By this user");
         } catch (Exception e) {
-            return new ResponseDTO<>(null, HttpStatus.INTERNAL_SERVER_ERROR, "You are not authorized");
+            return new ResponseDTO<>(userEntityDTO, null, HttpStatus.INTERNAL_SERVER_ERROR, "You are not authorized");
         }
     }
 
@@ -83,7 +95,7 @@ public class PostController {
                                            @PathVariable("postId") Integer postId)
     {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return new ResponseDTO<>(null, HttpStatus.UNAUTHORIZED, "You are not authorized");
+            return new ResponseDTO<>(null, null, HttpStatus.UNAUTHORIZED, "You are not authorized");
         }
 
         return  postLikeService.postLikeByIds(authHeader, postId);
@@ -94,11 +106,29 @@ public class PostController {
                                         @PathVariable("postId") Integer postId)
     {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return new ResponseDTO<>(null, HttpStatus.UNAUTHORIZED, "You are not authorized");
+            return new ResponseDTO<>(null, null, HttpStatus.UNAUTHORIZED, "You are not authorized");
         }
 
         return  postReportService.postReportById(authHeader, postId);
     }
 
+    @DeleteMapping("/user/post/delete/{id}")
+    public ResponseDTO<String> deletePostById(@RequestHeader("Authorization") String authHeader,
+                                              @PathVariable("id") Integer id) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return new ResponseDTO<>(null, null, HttpStatus.UNAUTHORIZED, "You are not authorized");
+        }
+        UserEntityDTO userEntityDTO = userService.getUserDetailsFromToken(authHeader);
+
+        try {
+            if(postService.deletePostById(id))
+            {
+                return new ResponseDTO<>(userEntityDTO,"Post Deleted Successfully!!!", HttpStatus.OK, "Successfully to Delete Post!!!");
+            }
+            return new ResponseDTO<>(userEntityDTO, "Failed to Delete Post!!!", HttpStatus.NOT_FOUND, "Failed to Delete Post!!!");
+        } catch (Exception e) {
+            return new ResponseDTO<>(userEntityDTO, null, HttpStatus.INTERNAL_SERVER_ERROR, "Failed to Delete Status!!!");
+        }
+    }
 
 }

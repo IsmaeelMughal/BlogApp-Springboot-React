@@ -1,11 +1,11 @@
 package com.testproject.blogapp.auth;
 
+import com.testproject.blogapp.dto.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -15,11 +15,21 @@ public class AuthenticationController {
     private final AuthenticationService service;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(
+    public ResponseDTO<String> register(
             @RequestBody RegisterRequest request
     )
     {
-        return ResponseEntity.ok(service.register(request));
+        return service.register(request);
+    }
+
+    @PostMapping("/verifyOtp")
+    public ResponseDTO<String> verifyOtp(
+            @RequestBody Map<String, String> otpRequestBody)
+    {
+        String email = otpRequestBody.get("email");
+        String otp = otpRequestBody.get("otp");
+        System.out.println("========");
+        return service.verifyOtp(email, Integer.parseInt(otp));
     }
 
     @PostMapping("/authenticate")

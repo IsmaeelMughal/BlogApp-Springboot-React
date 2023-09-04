@@ -1,7 +1,5 @@
 package com.testproject.blogapp.dto;
 
-import com.testproject.blogapp.model.Status;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

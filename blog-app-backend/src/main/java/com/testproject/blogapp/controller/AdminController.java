@@ -1,6 +1,8 @@
 package com.testproject.blogapp.controller;
 
+import com.testproject.blogapp.dto.AdminPostEntityDTO;
 import com.testproject.blogapp.dto.ResponseDTO;
+import com.testproject.blogapp.dto.SuggestionEntityDTO;
 import com.testproject.blogapp.dto.UserEntityDTO;
 import com.testproject.blogapp.model.Role;
 import com.testproject.blogapp.service.AdminService;
@@ -20,7 +22,7 @@ public class AdminController {
     public ResponseDTO<List<UserEntityDTO>> getAllUsersByUserRole(@RequestHeader("Authorization") String authHeader)
     {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return new ResponseDTO<>(null, HttpStatus.UNAUTHORIZED, "You are not authorized");
+            return new ResponseDTO<>(null, null, HttpStatus.UNAUTHORIZED, "You are not authorized");
         }
         return adminService.getAllUsersByRole(authHeader, Role.ROLE_USER);
     }
@@ -29,7 +31,7 @@ public class AdminController {
     public ResponseDTO<List<UserEntityDTO>> getAllModeratorsByRole(@RequestHeader("Authorization") String authHeader)
     {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return new ResponseDTO<>(null, HttpStatus.UNAUTHORIZED, "You are not authorized");
+            return new ResponseDTO<>(null, null, HttpStatus.UNAUTHORIZED, "You are not authorized");
         }
         return adminService.getAllUsersByRole(authHeader, Role.ROLE_MODERATOR);
     }
@@ -39,8 +41,21 @@ public class AdminController {
                                               @PathVariable("userId") Integer userId)
     {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return new ResponseDTO<>(null, HttpStatus.UNAUTHORIZED, "You are not authorized");
+            return new ResponseDTO<>(null, null, HttpStatus.UNAUTHORIZED, "You are not authorized");
         }
         return adminService.deleteUserById(authHeader, userId);
+    }
+
+
+    @GetMapping("/admin/showAllPosts")
+    public ResponseDTO<List<AdminPostEntityDTO>> showAllPosts(@RequestHeader("Authorization") String authHeader)
+    {
+        return adminService.getAllPosts(authHeader);
+    }
+
+    @GetMapping("/admin/getAllSuggestions")
+    public ResponseDTO<List<SuggestionEntityDTO>> getAllSuggestions(@RequestHeader("Authorization") String authHeader)
+    {
+        return adminService.getAllSuggestions(authHeader);
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +36,17 @@ public class UserEntity implements UserDetails {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
+    @Basic
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private UserAccountStatus status;
+    @Basic
+    @Column(name = "otp")
+    private Integer otp;
+    @Basic
+    @Column(name = "otp_expiration")
+    private LocalDateTime otpExpiration;
+
     @OneToMany(mappedBy = "userByUserId", cascade = CascadeType.ALL)
     private Set<CommentEntity> commentsById;
     @OneToMany(mappedBy = "userByUserId", cascade = CascadeType.ALL)
@@ -51,8 +63,6 @@ public class UserEntity implements UserDetails {
     private Set<SuggestionEntity> suggestionsById;
     @OneToMany(mappedBy = "userByUserId", cascade = CascadeType.ALL)
     private Set<CommentReplyEntity> commentRepliesById;
-    @OneToMany(mappedBy = "userByUserId", cascade = CascadeType.ALL)
-    private Set<SuggestionReplyEntity> suggestionRepliesById;
 
 
     public Set<CommentReplyEntity> getCommentRepliesById() {

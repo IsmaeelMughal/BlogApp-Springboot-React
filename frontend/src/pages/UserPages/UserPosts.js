@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 
 function UserPosts() {
     const [listOfPosts, setListOfPosts] = useState(null);
+    const [currentUser, setCurrentUser] = useState();
     useEffect(() => {
         async function fetchData() {
             try {
@@ -19,6 +20,7 @@ function UserPosts() {
                 if (res.status === 200) {
                     console.log(res.data.data);
                     setListOfPosts(res.data.data);
+                    setCurrentUser(res.data.currentUser);
                 } else {
                     toast("Failed To Fetch Post");
                 }
@@ -33,13 +35,17 @@ function UserPosts() {
         <div>
             <ToastContainer />
 
-            <div class="container px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-md-10 col-lg-8 col-xl-7">
+            <div className="container px-4 px-lg-5">
+                <div className="row gx-4 gx-lg-5 justify-content-center">
+                    <div className="col-md-10 col-lg-8 col-xl-7">
                         {listOfPosts && listOfPosts.length > 0
                             ? listOfPosts.map((post) => {
                                   return (
-                                      <PostCard postData={post} key={post.id} />
+                                      <PostCard
+                                          postData={post}
+                                          currentUser={currentUser}
+                                          key={post.id}
+                                      />
                                   );
                               })
                             : "NO POST FOUND"}

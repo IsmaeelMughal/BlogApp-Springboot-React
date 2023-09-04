@@ -2,19 +2,13 @@ package com.testproject.blogapp.service;
 
 
 import com.testproject.blogapp.config.JwtService;
-import com.testproject.blogapp.dto.ResponseDTO;
 import com.testproject.blogapp.dto.UserEntityDTO;
-import com.testproject.blogapp.model.Role;
 import com.testproject.blogapp.model.UserEntity;
 import com.testproject.blogapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -35,9 +29,8 @@ public class UserService {
         return  userEntityDTO;
     }
 
-    public boolean userExistsById(Integer userId)
+    public UserEntity getUserEntityFromId(Integer id)
     {
-        Optional<UserEntity> optionalUser =userRepository.findById(userId);
-        return optionalUser.isPresent();
+        return userRepository.findById(id).orElseThrow();
     }
 }

@@ -7,7 +7,7 @@ function UserHeader() {
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid">
                     <Link className="navbar-brand" to="/">
-                        Blog App
+                        <h2>Blog App</h2>
                     </Link>
                     <button
                         className="navbar-toggler"
@@ -42,6 +42,14 @@ function UserHeader() {
                             <li className="nav-item">
                                 <Link className="nav-link" to="/user/mypost">
                                     My Posts
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link
+                                    className="nav-link"
+                                    to="/user/suggestions"
+                                >
+                                    Check Suggestions
                                 </Link>
                             </li>
                         </ul>

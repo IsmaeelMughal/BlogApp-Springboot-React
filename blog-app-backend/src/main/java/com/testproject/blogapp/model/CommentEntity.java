@@ -21,11 +21,8 @@ public class CommentEntity {
     @Column(name = "id")
     private Integer id;
     @Basic
-    @Column(name = "content")
+    @Column(name = "content", length = 1000)
     private String content;
-    @Basic
-    @Column(name = "image")
-    private String image;
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity userByUserId;
@@ -63,14 +60,6 @@ public class CommentEntity {
         this.content = content;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -80,7 +69,6 @@ public class CommentEntity {
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (content != null ? !content.equals(that.content) : that.content != null) return false;
-        if (image != null ? !image.equals(that.image) : that.image != null) return false;
 
         return true;
     }
@@ -89,7 +77,6 @@ public class CommentEntity {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (content != null ? content.hashCode() : 0);
-        result = 31 * result + (image != null ? image.hashCode() : 0);
         return result;
     }
 

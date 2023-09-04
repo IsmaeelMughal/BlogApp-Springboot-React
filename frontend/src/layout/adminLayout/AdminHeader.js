@@ -7,7 +7,7 @@ function AdminHeader() {
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid">
                     <Link className="navbar-brand" to="/">
-                        Blog App - Admin
+                        <h2>Blog App - Admin</h2>
                     </Link>
                     <button
                         className="navbar-toggler"
@@ -56,6 +56,38 @@ function AdminHeader() {
                                     to="/admin/manageModerator"
                                 >
                                     Manage Moderator
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link
+                                    className="nav-link"
+                                    to="/admin/showAllPosts"
+                                >
+                                    Show Posts
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link
+                                    className="nav-link"
+                                    to="/admin/manageSuggestions"
+                                >
+                                    Show Suggestions
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link
+                                    className="nav-link"
+                                    to="/admin/showReportedPosts"
+                                >
+                                    Show Reported Posts
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link
+                                    className="nav-link"
+                                    to="/admin/manageReportedComments"
+                                >
+                                    Show Reported Comments
                                 </Link>
                             </li>
                         </ul>

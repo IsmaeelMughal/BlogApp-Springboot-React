@@ -6,9 +6,15 @@ import parse from "html-react-parser";
 import { IconButton } from "@mui/material";
 import { ThumbUp } from "@mui/icons-material";
 import FlagIcon from "@mui/icons-material/Flag";
+import CommentSection from "../../components/Comments/CommentSection";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useNavigate } from "react-router-dom";
+import SuggestionBox from "../../components/SuggestionBox";
+import EditIcon from "@mui/icons-material/Edit";
 
 function SinglePost() {
-    const [likeResponse, setLikeResponse] = useState({ message: "" });
+    const navigate = useNavigate();
+    const [currentUser, setCurrentUser] = useState({});
     const handleLikeClick = async () => {
         try {
             const res = await myAxios.post(
@@ -23,13 +29,34 @@ function SinglePost() {
                 }
             );
             if (res.status === 200) {
-                setLikeResponse(res.data);
                 toast(res.data.message);
             } else {
-                toast(likeResponse.message);
+                toast(res.data.message);
             }
         } catch (err) {
-            toast(likeResponse.message);
+            toast("Canot Like This Post!!");
+        }
+    };
+
+    const handleUserPostDelete = async () => {
+        try {
+            const res = await myAxios.delete(
+                `${BASE_URL}/user/post/delete/${postId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${JSON.parse(
+                            localStorage.getItem("token")
+                        )}`,
+                    },
+                }
+            );
+            if (res.status === 200) {
+                navigate("/user/mypost");
+            } else {
+                toast("Failed To Delete Post");
+            }
+        } catch (err) {
+            toast("Failed To Delete Post");
         }
     };
 
@@ -47,13 +74,12 @@ function SinglePost() {
                 }
             );
             if (res.status === 200) {
-                setLikeResponse(res.data);
                 toast(res.data.message);
             } else {
-                toast(likeResponse.message);
+                toast(res.data.message);
             }
         } catch (err) {
-            toast(likeResponse.message);
+            toast("Cannot Report This post!!!");
         }
     };
 
@@ -70,9 +96,8 @@ function SinglePost() {
                         )}`,
                     },
                 });
-                console.log(res);
                 if (res.status === 200) {
-                    console.log(res.data.data);
+                    setCurrentUser(res.data.currentUser);
                     setPostData(res.data.data);
                 } else {
                     toast("Failed To Fetch Post");
@@ -87,22 +112,21 @@ function SinglePost() {
     return (
         <div>
             <ToastContainer />
-            {/* <!-- Page Header--> */}
             {postData != null ? (
                 <div>
                     <header
-                        class="masthead"
+                        className="masthead"
                         style={{
-                            "background-image": `url(${postData.image})`,
+                            backgroundImage: `url(${postData.image})`,
                         }}
                     >
-                        <div class="container position-relative px-4 px-lg-5">
-                            <div class="row gx-4 gx-lg-5 justify-content-center">
-                                <div class="col-md-10 col-lg-8 col-xl-7">
-                                    <div class="post-heading">
+                        <div className="container position-relative px-4 px-lg-5">
+                            <div className="row gx-4 gx-lg-5 justify-content-center">
+                                <div className="col-md-10 col-lg-8 col-xl-7">
+                                    <div className="post-heading">
                                         <h1>{postData.title}</h1>
 
-                                        <span class="meta">
+                                        <span className="meta">
                                             Posted by {postData.postedBy.name}{" "}
                                             on {postData.date}
                                         </span>
@@ -112,10 +136,10 @@ function SinglePost() {
                         </div>
                     </header>
                     {/* <!-- Post Content--> */}
-                    <article class="mb-4">
-                        <div class="container px-4 px-lg-5">
-                            <div class="row gx-4 gx-lg-5 justify-content-center">
-                                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <article className="mb-4">
+                        <div className="container px-4 px-lg-5">
+                            <div className="row gx-4 gx-lg-5 justify-content-center">
+                                <div className="col-md-10 col-lg-8 col-xl-7">
                                     {parse(postData.content)}
                                 </div>
                             </div>
@@ -127,14 +151,58 @@ function SinglePost() {
                             LIKE <ThumbUp />
                         </IconButton>
 
-                        <IconButton onClick={handleReportClick} color="error">
-                            REPORT
-                            <FlagIcon />
-                        </IconButton>
+                        {currentUser.id !== postData.postedBy.id ||
+                        currentUser.role === "ROLE_ADMIN" ? (
+                            <IconButton
+                                onClick={handleReportClick}
+                                color="error"
+                            >
+                                REPORT
+                                <FlagIcon />
+                            </IconButton>
+                        ) : (
+                            ""
+                        )}
+
+                        {currentUser.id === postData.postedBy.id ? (
+                            <IconButton
+                                color="info"
+                                onClick={() => {
+                                    navigate(`/user/editPost/${postData.id}`);
+                                }}
+                            >
+                                EDIT
+                                <EditIcon />
+                            </IconButton>
+                        ) : (
+                            ""
+                        )}
+
+                        {currentUser.id === postData.postedBy.id ||
+                        currentUser.role === "ROLE_ADMIN" ? (
+                            <span>
+                                <IconButton
+                                    color="secondary"
+                                    onClick={handleUserPostDelete}
+                                >
+                                    DELETE
+                                    <DeleteIcon />
+                                </IconButton>
+                            </span>
+                        ) : (
+                            ""
+                        )}
                     </div>
+                    <hr className="my-4" />
+                    {currentUser.id !== postData.postedBy.id ? (
+                        <SuggestionBox postId={postId} />
+                    ) : (
+                        ""
+                    )}
+                    <CommentSection postId={postId} />
                 </div>
             ) : (
-                toast("Failed To Fetch Post")
+                ""
             )}
         </div>
     );

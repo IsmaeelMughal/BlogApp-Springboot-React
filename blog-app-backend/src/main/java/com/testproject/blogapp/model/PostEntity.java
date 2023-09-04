@@ -24,7 +24,7 @@ public class PostEntity {
     @Basic
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private PostStatus postStatus;
     @Basic
     @Column(name = "date")
     @Temporal(TemporalType.DATE)
@@ -53,12 +53,12 @@ public class PostEntity {
         this.date = date;
     }
 
-    public Status getStatus() {
-        return status;
+    public PostStatus getStatus() {
+        return postStatus;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatus(PostStatus postStatus) {
+        this.postStatus = postStatus;
     }
 
     public Integer getId() {
