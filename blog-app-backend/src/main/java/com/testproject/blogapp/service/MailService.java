@@ -60,7 +60,7 @@ public class MailService {
             javaMailSender.send(message);
             return true;
         } catch (Exception e) {
-            throw new RuntimeException("Unable to send email");
+            return false;
         }
     }
 }

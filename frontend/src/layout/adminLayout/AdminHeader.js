@@ -1,7 +1,13 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function AdminHeader() {
+    const navigate = useNavigate();
+    const handleLogoutClick = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        navigate("/");
+    };
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -92,7 +98,10 @@ function AdminHeader() {
                             </li>
                         </ul>
                         <div className="d-flex">
-                            <button className="btn btn-outline-primary">
+                            <button
+                                onClick={handleLogoutClick}
+                                className="btn btn-outline-primary"
+                            >
                                 Logout
                             </button>
                         </div>

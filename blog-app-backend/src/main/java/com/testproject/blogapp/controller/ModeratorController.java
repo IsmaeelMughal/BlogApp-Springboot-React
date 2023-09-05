@@ -7,6 +7,7 @@ import com.testproject.blogapp.dto.UserEntityDTO;
 import com.testproject.blogapp.service.PostReportService;
 import com.testproject.blogapp.service.PostService;
 import com.testproject.blogapp.service.UserService;
+import com.testproject.blogapp.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class ModeratorController {
     private final PostReportService postReportService;
     private final UserService userService;
     @GetMapping("/moderator/posts/unapproved")
-    public ResponseDTO<List<PostEntityDTO>> getAllUnapprovedPosts(@RequestHeader("Authorization") String authHeader) {
+    public ResponseDTO<List<PostEntityDTO>> getAllUnapprovedPosts(@RequestHeader(Constants.AUTHORIZATION) String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return new ResponseDTO<>(null,null, HttpStatus.UNAUTHORIZED, "You are not authorized");
         }
@@ -34,7 +35,7 @@ public class ModeratorController {
     }
 
     @PostMapping("/moderator/post/approve/{id}")
-    public ResponseDTO<String> approvePostById(@RequestHeader("Authorization") String authHeader,
+    public ResponseDTO<String> approvePostById(@RequestHeader(Constants.AUTHORIZATION) String authHeader,
                                                      @PathVariable("id") Integer id) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return new ResponseDTO<>(null, null, HttpStatus.UNAUTHORIZED, "You are not authorized");
@@ -51,7 +52,7 @@ public class ModeratorController {
         }
     }
     @DeleteMapping("/moderator/post/delete/{id}")
-    public ResponseDTO<String> deletePostById(@RequestHeader("Authorization") String authHeader,
+    public ResponseDTO<String> deletePostById(@RequestHeader(Constants.AUTHORIZATION) String authHeader,
                                                @PathVariable("id") Integer id) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return new ResponseDTO<>(null, null, HttpStatus.UNAUTHORIZED, "You are not authorized");
@@ -70,7 +71,7 @@ public class ModeratorController {
     }
 
     @GetMapping("/moderator/post/getReportedPosts")
-    public ResponseDTO<List<ReportedPostEntityDTO>> getAllReportedPosts(@RequestHeader("Authorization") String authHeader)
+    public ResponseDTO<List<ReportedPostEntityDTO>> getAllReportedPosts(@RequestHeader(Constants.AUTHORIZATION) String authHeader)
     {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return new ResponseDTO<>(null,null, HttpStatus.UNAUTHORIZED, "You are not authorized");

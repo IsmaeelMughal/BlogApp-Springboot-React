@@ -8,7 +8,7 @@ import com.testproject.blogapp.dto.ResponseDTO;
 import com.testproject.blogapp.service.CommentLikeService;
 import com.testproject.blogapp.service.CommentReportService;
 import com.testproject.blogapp.service.CommentService;
-import lombok.Getter;
+import com.testproject.blogapp.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +24,7 @@ public class CommentController {
 
     @GetMapping("/post/comments/{postId}")
     public ResponseDTO<List<CommentEntityDTO>> getPostCommentsByPostId(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader(Constants.AUTHORIZATION) String authHeader,
             @PathVariable("postId") Integer postId)
     {
         return commentService.getAllCommentsByPostId(authHeader, postId);
@@ -32,7 +32,7 @@ public class CommentController {
 
     @PostMapping("/post/addComment")
     public ResponseDTO<CommentEntityDTO> addCommentByPostId(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader(Constants.AUTHORIZATION) String authHeader,
             @RequestBody Map<String, String> commentData
     ) {
         String postId = commentData.get("postId");
@@ -42,7 +42,7 @@ public class CommentController {
     }
     @PostMapping("/post/comment/addReply")
     public ResponseDTO<CommentReplyEntityDTO> addReplyToComment(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader(Constants.AUTHORIZATION) String authHeader,
             @RequestBody Map<String, String> commentData
     ) {
         String commentId = commentData.get("commentId");
@@ -53,7 +53,7 @@ public class CommentController {
 
     @PostMapping("/post/comment/like")
     public ResponseDTO<String> likeComment(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader(Constants.AUTHORIZATION) String authHeader,
             @RequestBody Map<String, String> commentData
     ) {
         String postId = commentData.get("postId");
@@ -64,7 +64,7 @@ public class CommentController {
 
     @PostMapping("/post/comment/report")
     public ResponseDTO<String> reportComment(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader(Constants.AUTHORIZATION) String authHeader,
             @RequestBody Map<String, String> commentData
     ) {
         String postId = commentData.get("postId");
@@ -75,14 +75,14 @@ public class CommentController {
 
     @DeleteMapping("/post/comment/delete/{commentId}")
     public ResponseDTO<CommentEntityDTO> reportComment(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader(Constants.AUTHORIZATION) String authHeader,
             @PathVariable("commentId") Integer commentId
     ) {
         return commentService.deleteComment(authHeader, commentId);
     }
 
     @GetMapping("/admin/comment/reportedComments")
-    public ResponseDTO<List<ReportedCommentDTO>> getAllReportedComments(@RequestHeader("Authorization") String authHeader)
+    public ResponseDTO<List<ReportedCommentDTO>> getAllReportedComments(@RequestHeader(Constants.AUTHORIZATION) String authHeader)
     {
         return commentService.getAllReportedComments(authHeader);
     }

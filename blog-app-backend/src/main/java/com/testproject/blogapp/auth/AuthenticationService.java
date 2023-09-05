@@ -7,7 +7,6 @@ import com.testproject.blogapp.model.UserAccountStatus;
 import com.testproject.blogapp.model.UserEntity;
 import com.testproject.blogapp.repository.UserRepository;
 import com.testproject.blogapp.service.MailService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,18 +27,14 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final MailService mailService;
 
-    private Integer generateRandomOtp()
+    public Integer generateRandomOtp()
     {
-        // Define the length of the OTP
         int otpLength = 6;
-        // Create a Random object
         Random random = new Random();
-        // Generate the OTP
         StringBuilder otp = new StringBuilder();
         for (int i = 0; i < otpLength; i++) {
-            otp.append(random.nextInt(10)); // Generate a random digit (0-9)
+            otp.append(random.nextInt(10));
         }
-        // Print the OTP
        return Integer.parseInt(String.valueOf(otp));
     }
 
@@ -59,9 +54,7 @@ public class AuthenticationService {
             userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
             userEntity.setStatus(UserAccountStatus.UNVERIFIED);
             userEntity.setOtp(randomOtp);
-            // Get the current LocalDateTime
             LocalDateTime currentDateTime = LocalDateTime.now();
-            // Add 15 minutes to the current LocalDateTime
             LocalDateTime expireTime = currentDateTime.plusMinutes(15);
             userEntity.setOtpExpiration(expireTime);
 
@@ -80,9 +73,7 @@ public class AuthenticationService {
             userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
             userEntity.setStatus(UserAccountStatus.UNVERIFIED);
             userEntity.setOtp(randomOtp);
-            // Get the current LocalDateTime
             LocalDateTime currentDateTime = LocalDateTime.now();
-            // Add 15 minutes to the current LocalDateTime
             LocalDateTime expireTime = currentDateTime.plusMinutes(15);
             userEntity.setOtpExpiration(expireTime);
 

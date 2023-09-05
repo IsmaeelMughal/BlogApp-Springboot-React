@@ -1,5 +1,6 @@
 package com.testproject.blogapp.config;
 
+import com.testproject.blogapp.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +26,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfiguration {
-
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
@@ -35,19 +35,30 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request->
-                        request.requestMatchers("/api/auth/**")
+                        request.requestMatchers(Constants.AUTH_FILTER_PATH)
                                 .permitAll()
-                                .requestMatchers("/post/**").hasAnyRole("USER","ADMIN","MODERATOR")
-                                .requestMatchers("/user/**").hasAnyRole("USER","ADMIN")
-                                .requestMatchers("/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/moderator/**").hasAnyRole("MODERATOR","ADMIN")
+                                .requestMatchers(Constants.POST_FILTER_PATH).hasAnyRole(
+                                        Constants.MODERATOR_FILTER_ROLE,
+                                        Constants.ADMIN_FILTER_ROLE,
+                                        Constants.USER_FILTER_ROLE
+                                )
+                                .requestMatchers(Constants.USER_FILTER_PATH).hasAnyRole(
+                                        Constants.USER_FILTER_ROLE,
+                                        Constants.ADMIN_FILTER_ROLE
+                                )
+                                .requestMatchers(Constants.ADMIN_FILTER_PATH).hasRole(
+                                        Constants.ADMIN_FILTER_ROLE
+                                )
+                                .requestMatchers(Constants.MODERATOR_FILTER_PATH).hasAnyRole(
+                                        Constants.MODERATOR_FILTER_ROLE,
+                                        Constants.ADMIN_FILTER_ROLE
+                                )
                                 .anyRequest()
                                 .authenticated()
                 )
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
@@ -55,15 +66,12 @@ public class SecurityConfiguration {
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
-        corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
-                "Accept", "Authorization", "Origin, Accept", "X-Requested-With",
-                "Access-Control-Request-Method", "Access-Control-Request-Headers"));
-        corsConfiguration.setExposedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization",
-                "Access-Control-Allow-Origin", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
-        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        corsConfiguration.setAllowedOrigins(Constants.CORS_ALLOWED_ORIGINS);
+        corsConfiguration.setAllowedHeaders(Constants.CORS_ALLOWED_HEADERS);
+        corsConfiguration.setExposedHeaders(Constants.CORS_EXPOSED_HEADERS);
+        corsConfiguration.setAllowedMethods(Constants.CORS_ALLOWED_METHODS);
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        urlBasedCorsConfigurationSource.registerCorsConfiguration(Constants.CORS_CONFIGURATION_PATTERN, corsConfiguration);
         return new CorsFilter(urlBasedCorsConfigurationSource);
     }
 }

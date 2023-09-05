@@ -1,9 +1,10 @@
 package com.testproject.blogapp.model;
 
+import com.testproject.blogapp.utils.Constants;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "post_like", schema = "blog_app")
+@Table(name = "post_like", schema = Constants.SCHEMA_NAME)
 public class PostLikeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

@@ -4,7 +4,6 @@ import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
-
 import UserSinglePost from "./pages/UserPages/UserSinglePost";
 import UserLayout from "./layout/userLayout/UserLayout";
 import UserHome from "./pages/UserPages/UserHome";
@@ -26,8 +25,9 @@ import AdminShowAllPosts from "./pages/AdminPages/AdminShowAllPosts";
 import AdminReportedPosts from "./pages/AdminPages/AdminReportedPosts";
 import AdminManageSuggestions from "./pages/AdminPages/AdminManageSuggestions";
 import AdminManageReportedComments from "./pages/AdminPages/AdminManageReportedComments";
-import AdminSinglePostDetails from "./pages/AdminPages/AdminSinglePostDetails";
 import OtpVerification from "./components/OtpVerification";
+import EditProfile from "./pages/UserPages/EditProfile";
+import EmailUpdateOtp from "./pages/UserPages/EmailUpdateOtp";
 
 function App() {
     return (
@@ -42,11 +42,20 @@ function App() {
                 <Route path="post/:postId" element={<UserSinglePost />} />
                 <Route path="suggestions" element={<UserSuggestionPage />} />
                 <Route path="editPost/:postId" element={<EditPost />} />
+                <Route path="profile" element={<EditProfile />} />
+                <Route
+                    path="emailVerificationOtp"
+                    element={<EmailUpdateOtp />}
+                />
             </Route>
 
             <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminHome />} />
-                <Route path="manageUsers" element={<AdminManageUsers />} />
+                <Route
+                    index
+                    path="manageUsers"
+                    element={<AdminManageUsers />}
+                />
                 <Route path="addModerator" element={<AdminAddModerator />} />
                 <Route
                     path="manageModerator"
@@ -65,12 +74,9 @@ function App() {
                     path="manageReportedComments"
                     element={<AdminManageReportedComments />}
                 />
-                <Route
-                    path="post/:postId"
-                    element={<AdminSinglePostDetails />}
-                />
+                <Route path="post/:postId" element={<UserSinglePost />} />
+                <Route path="otpVerification" element={<OtpVerification />} />
             </Route>
-
             <Route path="/moderator" element={<ModeratorLayout />}>
                 <Route index element={<ModeratorUnapprovedPosts />} />
                 <Route

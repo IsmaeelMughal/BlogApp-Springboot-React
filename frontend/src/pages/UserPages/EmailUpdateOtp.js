@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { MuiOtpInput } from "mui-one-time-password-input";
 import { ToastContainer, toast } from "react-toastify";
-import { BASE_URL, myAxios } from "../services/AxiosHelper";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL, myAxios } from "../../services/AxiosHelper";
 
 const validateChar = (value, index) => {
     return /^[0-9]$/.test(value);
 };
 
-function OtpVerification() {
+function EmailUpdateOtp() {
     const [otp, setOtp] = useState("");
     const navigate = useNavigate();
 
@@ -20,9 +20,40 @@ function OtpVerification() {
 
     useEffect(() => {
         setUserEmail(JSON.parse(localStorage.getItem("email")));
-
-        if (userEmail == null || userEmail === "") {
+        const token = JSON.parse(localStorage.getItem("token"));
+        const role = JSON.parse(localStorage.getItem("role"));
+        if (!token || !role || token === "" || role !== "ROLE_USER") {
             navigate("/");
+        } else {
+            async function checkAuthority() {
+                try {
+                    const res = await myAxios.get(
+                        `${BASE_URL}/user/getDetails`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${JSON.parse(
+                                    localStorage.getItem("token")
+                                )}`,
+                            },
+                        }
+                    );
+                    if (res.status === 200) {
+                        if (
+                            res.data.status === "OK" &&
+                            res.data.data.role !== "ROLE_USER"
+                        ) {
+                            navigate("/");
+                        } else if (res.data.status !== "OK") {
+                            navigate("/");
+                        }
+                    } else {
+                        navigate("/");
+                    }
+                } catch (err) {
+                    navigate("/");
+                }
+            }
+            checkAuthority();
         }
 
         toast(`Please Check your mail!!!`);
@@ -31,10 +62,20 @@ function OtpVerification() {
     const handleOTPSubmit = async (event) => {
         event.preventDefault();
         try {
-            const res = await myAxios.post(`${BASE_URL}/api/auth/verifyOtp`, {
-                email: userEmail,
-                otp: otp,
-            });
+            const res = await myAxios.post(
+                `${BASE_URL}/user/validateOtpForEmailUpdate`,
+                {
+                    email: userEmail,
+                    otp: otp,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${JSON.parse(
+                            localStorage.getItem("token")
+                        )}`,
+                    },
+                }
+            );
             if (res.status === 200) {
                 if (res.data.status === "OK") {
                     toast(res.data.message);
@@ -42,15 +83,10 @@ function OtpVerification() {
                         "You will be directed to sign in page in few seconds!!!"
                     );
                     localStorage.removeItem("email");
+                    localStorage.removeItem("role");
+                    localStorage.removeItem("token");
                     setTimeout(() => {
-                        if (
-                            JSON.parse(localStorage.getItem("token")) ===
-                            "ROLE_USER"
-                        ) {
-                            navigate("/");
-                        } else {
-                            navigate("/admin/addModerator");
-                        }
+                        navigate("/");
                     }, 6000);
                 } else {
                     toast(res.data.message);
@@ -62,7 +98,6 @@ function OtpVerification() {
             toast("Failed to Verify!!!");
         }
     };
-
     return (
         <div className="container">
             <ToastContainer />
@@ -123,4 +158,4 @@ function OtpVerification() {
     );
 }
 
-export default OtpVerification;
+export default EmailUpdateOtp;

@@ -1,5 +1,6 @@
 package com.testproject.blogapp.model;
 
+import com.testproject.blogapp.utils.Constants;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "user", schema = "blog_app")
+@Table(name = "user", schema = Constants.SCHEMA_NAME)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

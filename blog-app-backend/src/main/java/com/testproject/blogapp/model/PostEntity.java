@@ -1,12 +1,13 @@
 package com.testproject.blogapp.model;
 
+import com.testproject.blogapp.utils.Constants;
 import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.Set;
 
 @Entity
-@Table(name = "post", schema = "blog_app")
+@Table(name = "post", schema = Constants.SCHEMA_NAME)
 public class PostEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

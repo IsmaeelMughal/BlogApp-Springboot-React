@@ -1,11 +1,12 @@
 package com.testproject.blogapp.model;
 
+import com.testproject.blogapp.utils.Constants;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "suggestion", schema = "blog_app")
+@Table(name = "suggestion", schema = Constants.SCHEMA_NAME)
 @Getter
 @Setter
 public class SuggestionEntity {

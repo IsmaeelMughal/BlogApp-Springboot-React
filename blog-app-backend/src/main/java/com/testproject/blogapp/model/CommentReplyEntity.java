@@ -1,6 +1,7 @@
 package com.testproject.blogapp.model;
 
 
+import com.testproject.blogapp.utils.Constants;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "comment_reply", schema = "blog_app")
+@Table(name = "comment_reply", schema = Constants.SCHEMA_NAME)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

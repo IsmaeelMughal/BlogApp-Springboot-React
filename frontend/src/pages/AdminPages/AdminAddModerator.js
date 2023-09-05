@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -13,6 +13,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { ToastContainer, toast } from "react-toastify";
 import { BASE_URL, myAxios } from "../../services/AxiosHelper";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
     return (
@@ -35,7 +36,7 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 function AdminAddModerator() {
-    const [error, setError] = useState({ message: "" });
+    const navigate = useNavigate();
 
     const [userDetails, setUserDetails] = useState({
         name: "",
@@ -51,21 +52,61 @@ function AdminAddModerator() {
                 password: userDetails.password,
                 role: "ROLE_MODERATOR",
             });
-            console.log(res);
-            const jwt = res.data.token;
-            if (jwt === "") {
-                setError({
-                    message: "Email Already in Use!!!",
-                });
+            if (res.status === 200) {
+                if (res.data.status === "OK") {
+                    localStorage.setItem(
+                        "email",
+                        JSON.stringify(userDetails.email)
+                    );
+                    navigate("/admin/otpVerification");
+                } else {
+                    toast(res.data.message);
+                }
             } else {
-                toast("Registered Successfully!!!");
+                toast(res.data.message);
             }
         } catch (error) {
-            setError({
-                message: "Server is busy!!!",
-            });
+            toast("Regestration Failed!!!");
         }
     };
+
+    useEffect(() => {
+        const token = JSON.parse(localStorage.getItem("token"));
+        const role = JSON.parse(localStorage.getItem("role"));
+        if (!token || !role || token === "" || role !== "ROLE_ADMIN") {
+            navigate("/");
+        } else {
+            async function checkAuthority() {
+                try {
+                    const res = await myAxios.get(
+                        `${BASE_URL}/user/getDetails`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${JSON.parse(
+                                    localStorage.getItem("token")
+                                )}`,
+                            },
+                        }
+                    );
+                    if (res.status === 200) {
+                        if (
+                            res.data.status === "OK" &&
+                            res.data.data.role !== "ROLE_ADMIN"
+                        ) {
+                            navigate("/");
+                        } else if (res.data.status !== "OK") {
+                            navigate("/");
+                        }
+                    } else {
+                        navigate("/");
+                    }
+                } catch (err) {
+                    navigate("/");
+                }
+            }
+            checkAuthority();
+        }
+    }, []);
     return (
         <ThemeProvider theme={defaultTheme}>
             <ToastContainer />
@@ -142,15 +183,7 @@ function AdminAddModerator() {
                                 />
                             </Grid>
                         </Grid>
-                        <Grid>
-                            {error.message === "" ? (
-                                ""
-                            ) : (
-                                <p className="text-danger font-weight-bold my-2">
-                                    {error.message}
-                                </p>
-                            )}
-                        </Grid>
+
                         <Button
                             type="submit"
                             fullWidth

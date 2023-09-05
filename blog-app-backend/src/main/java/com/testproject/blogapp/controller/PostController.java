@@ -7,6 +7,7 @@ import com.testproject.blogapp.service.PostLikeService;
 import com.testproject.blogapp.service.PostReportService;
 import com.testproject.blogapp.service.PostService;
 import com.testproject.blogapp.service.UserService;
+import com.testproject.blogapp.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class PostController {
             @RequestParam("image") MultipartFile file,
             @RequestParam("title") String title,
             @RequestParam("content") String content,
-            @RequestHeader("Authorization") String authHeader
+            @RequestHeader(Constants.AUTHORIZATION) String authHeader
     ) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
@@ -46,7 +47,7 @@ public class PostController {
     @PatchMapping("/user/editPost/{postId}")
     public ResponseDTO<String> editPost(@PathVariable("postId") Integer postId,
                                         @RequestBody Map<String, String> postData,
-                                        @RequestHeader("Authorization") String authHeader)
+                                        @RequestHeader(Constants.AUTHORIZATION) String authHeader)
     {
         String title = postData.get("title");
         String content = postData.get("content");
@@ -54,7 +55,7 @@ public class PostController {
     }
 
     @GetMapping("/post/{id}")
-    public ResponseDTO<PostEntityDTO> getPostById(@RequestHeader("Authorization") String authHeader,
+    public ResponseDTO<PostEntityDTO> getPostById(@RequestHeader(Constants.AUTHORIZATION) String authHeader,
                                                   @PathVariable("id") Integer postId)
     {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -75,7 +76,7 @@ public class PostController {
     }
 
     @GetMapping("/post/allApprovedPosts")
-    public ResponseDTO<List<PostEntityDTO>> getAllApprovedPosts(@RequestHeader("Authorization") String authHeader)
+    public ResponseDTO<List<PostEntityDTO>> getAllApprovedPosts(@RequestHeader(Constants.AUTHORIZATION) String authHeader)
     {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return new ResponseDTO<>(null, null, HttpStatus.UNAUTHORIZED, "You are not authorized");
@@ -91,7 +92,7 @@ public class PostController {
 
 
     @PostMapping("/user/post/like/{postId}")
-    public ResponseDTO<String> likePost(@RequestHeader("Authorization") String authHeader,
+    public ResponseDTO<String> likePost(@RequestHeader(Constants.AUTHORIZATION) String authHeader,
                                            @PathVariable("postId") Integer postId)
     {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -102,7 +103,7 @@ public class PostController {
     }
 
     @PostMapping("/user/post/report/{postId}")
-    public ResponseDTO<String> reportPost(@RequestHeader("Authorization") String authHeader,
+    public ResponseDTO<String> reportPost(@RequestHeader(Constants.AUTHORIZATION) String authHeader,
                                         @PathVariable("postId") Integer postId)
     {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -113,7 +114,7 @@ public class PostController {
     }
 
     @DeleteMapping("/user/post/delete/{id}")
-    public ResponseDTO<String> deletePostById(@RequestHeader("Authorization") String authHeader,
+    public ResponseDTO<String> deletePostById(@RequestHeader(Constants.AUTHORIZATION) String authHeader,
                                               @PathVariable("id") Integer id) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return new ResponseDTO<>(null, null, HttpStatus.UNAUTHORIZED, "You are not authorized");

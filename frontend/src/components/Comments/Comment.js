@@ -257,7 +257,6 @@ function Comment({
                             Reply
                         </button>
                     </div>
-                    <hr />
                 </div>
             </div>
         </div>

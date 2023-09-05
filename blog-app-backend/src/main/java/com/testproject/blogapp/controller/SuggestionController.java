@@ -3,6 +3,7 @@ package com.testproject.blogapp.controller;
 import com.testproject.blogapp.dto.ResponseDTO;
 import com.testproject.blogapp.dto.SuggestionEntityDTO;
 import com.testproject.blogapp.service.SuggestionService;
+import com.testproject.blogapp.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class SuggestionController {
     private final SuggestionService suggestionService;
     @PostMapping("/post/addSuggestion")
     public ResponseDTO<String> addSuggestion(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader(Constants.AUTHORIZATION) String authHeader,
             @RequestBody Map<String, String> suggestionData
     )
     {
@@ -26,7 +27,7 @@ public class SuggestionController {
 
     @GetMapping("/post/suggestion/userSuggestions")
     public ResponseDTO<List<SuggestionEntityDTO>> userSuggestionsOnOthersPosts(
-            @RequestHeader("Authorization") String authHeader
+            @RequestHeader(Constants.AUTHORIZATION) String authHeader
     )
     {
         return suggestionService.userSuggestionsOnOthersPosts(authHeader);
@@ -34,14 +35,14 @@ public class SuggestionController {
 
     @GetMapping("/post/suggestion/otherSuggestionOnUserPost")
     public ResponseDTO<List<SuggestionEntityDTO>> otherSuggestionOnUserPost(
-            @RequestHeader("Authorization") String authHeader
+            @RequestHeader(Constants.AUTHORIZATION) String authHeader
     )
     {
         return suggestionService.othersSuggestionsOnUserPosts(authHeader);
     }
 
     @PatchMapping("/post/suggestion/addReply")
-    public ResponseDTO<String> addReply(@RequestHeader("Authorization") String authHeader,
+    public ResponseDTO<String> addReply(@RequestHeader(Constants.AUTHORIZATION) String authHeader,
                                         @RequestBody Map<String, String> suggestionData)
     {
         return suggestionService.addReply(
@@ -51,14 +52,14 @@ public class SuggestionController {
     }
 
     @PatchMapping("/post/suggestion/reject/{suggestionId}")
-    public ResponseDTO<String> addReply(@RequestHeader("Authorization") String authHeader,
+    public ResponseDTO<String> addReply(@RequestHeader(Constants.AUTHORIZATION) String authHeader,
                                         @PathVariable("suggestionId") Integer suggestionId)
     {
         return suggestionService.rejectSuggestion(authHeader, suggestionId);
     }
 
     @DeleteMapping("/post/suggestion/delete/{suggestionId}")
-    public ResponseDTO<String> deleteSuggestion(@RequestHeader("Authorization") String authHeader,
+    public ResponseDTO<String> deleteSuggestion(@RequestHeader(Constants.AUTHORIZATION) String authHeader,
                                         @PathVariable("suggestionId") Integer suggestionId)
     {
         return suggestionService.deleteSuggestion(authHeader, suggestionId);

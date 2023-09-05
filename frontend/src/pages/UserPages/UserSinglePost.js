@@ -87,6 +87,42 @@ function SinglePost() {
     const [postData, setPostData] = useState(null);
 
     useEffect(() => {
+        const token = JSON.parse(localStorage.getItem("token"));
+        const role = JSON.parse(localStorage.getItem("role"));
+        if (!token || !role || token === "") {
+            navigate("/");
+        } else {
+            async function checkAuthority() {
+                try {
+                    const res = await myAxios.get(
+                        `${BASE_URL}/user/getDetails`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${JSON.parse(
+                                    localStorage.getItem("token")
+                                )}`,
+                            },
+                        }
+                    );
+                    if (res.status === 200) {
+                        if (
+                            res.data.status === "OK" &&
+                            (res.data.data.role === "ROLE_USER" ||
+                                res.data.data.role === "ROLE_ADMIN")
+                        ) {
+                        } else {
+                            navigate("/");
+                        }
+                    } else {
+                        navigate("/");
+                    }
+                } catch (err) {
+                    navigate("/");
+                }
+            }
+            checkAuthority();
+        }
+
         async function fetchData() {
             try {
                 const res = await myAxios.get(`${BASE_URL}/post/${postId}`, {
@@ -193,7 +229,7 @@ function SinglePost() {
                             ""
                         )}
                     </div>
-                    <hr className="my-4" />
+
                     {currentUser.id !== postData.postedBy.id ? (
                         <SuggestionBox postId={postId} />
                     ) : (

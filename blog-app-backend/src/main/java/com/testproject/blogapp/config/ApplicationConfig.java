@@ -3,6 +3,7 @@ package com.testproject.blogapp.config;
 import com.cloudinary.Cloudinary;
 import com.testproject.blogapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,15 @@ import java.util.Map;
 public class ApplicationConfig {
 
     private final UserRepository repository;
+
+    @Value("${cloudinary.cloud_name}")
+    private String cloudName;
+
+    @Value("${cloudinary.api_key}")
+    private String apiKey;
+
+    @Value("${cloudinary.api_secret}")
+    private String apiSecret;
 
     @Bean
     public UserDetailsService userDetailsService(){
@@ -50,9 +60,9 @@ public class ApplicationConfig {
     @Bean
     public Cloudinary getCloudinary(){
         Map config = new HashMap<>();
-        config.put("cloud_name", "dd79prws0");
-        config.put("api_key", "818729893753982");
-        config.put("api_secret", "vqH5-1fhuVZP7Chxx45K2cYszvc");
+        config.put("cloud_name", cloudName);
+        config.put("api_key", apiKey);
+        config.put("api_secret", apiSecret);
         return new Cloudinary(config);
     }
 }
