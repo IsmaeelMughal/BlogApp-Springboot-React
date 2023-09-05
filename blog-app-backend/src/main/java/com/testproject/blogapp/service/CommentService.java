@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +60,6 @@ public class CommentService {
                     ).toList()
             );
         }).toList();
-
         return new ResponseDTO<>(userEntityDTO, commentEntityDTOList, HttpStatus.OK, "List of Comments On this Post!!!");
     }
 

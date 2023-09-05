@@ -18,41 +18,41 @@ export default function ModeratorReportedPosts() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = JSON.parse(localStorage.getItem("token"));
-        const role = JSON.parse(localStorage.getItem("role"));
-        if (!token || !role || token === "" || role !== "ROLE_MODERATOR") {
-            navigate("/");
-        } else {
-            async function checkAuthority() {
-                try {
-                    const res = await myAxios.get(
-                        `${BASE_URL}/user/getDetails`,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${JSON.parse(
-                                    localStorage.getItem("token")
-                                )}`,
-                            },
-                        }
-                    );
-                    if (res.status === 200) {
-                        if (
-                            res.data.status === "OK" &&
-                            res.data.data.role !== "ROLE_MODERATOR"
-                        ) {
-                            navigate("/");
-                        } else if (res.data.status !== "OK") {
-                            navigate("/");
-                        }
-                    } else {
-                        navigate("/");
-                    }
-                } catch (err) {
-                    navigate("/");
-                }
-            }
-            checkAuthority();
-        }
+        // const token = JSON.parse(localStorage.getItem("token"));
+        // const role = JSON.parse(localStorage.getItem("role"));
+        // if (!token || !role || token === "" || role !== "ROLE_MODERATOR") {
+        //     navigate("/");
+        // } else {
+        //     async function checkAuthority() {
+        //         try {
+        //             const res = await myAxios.get(
+        //                 `${BASE_URL}/user/getDetails`,
+        //                 {
+        //                     headers: {
+        //                         Authorization: `Bearer ${JSON.parse(
+        //                             localStorage.getItem("token")
+        //                         )}`,
+        //                     },
+        //                 }
+        //             );
+        //             if (res.status === 200) {
+        //                 if (
+        //                     res.data.status === "OK" &&
+        //                     res.data.data.role !== "ROLE_MODERATOR"
+        //                 ) {
+        //                     navigate("/");
+        //                 } else if (res.data.status !== "OK") {
+        //                     navigate("/");
+        //                 }
+        //             } else {
+        //                 navigate("/");
+        //             }
+        //         } catch (err) {
+        //             navigate("/");
+        //         }
+        //     }
+        //     checkAuthority();
+        // }
         async function fetchData() {
             try {
                 const res = await myAxios.get(

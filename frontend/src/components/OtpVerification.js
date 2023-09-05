@@ -21,10 +21,6 @@ function OtpVerification() {
     useEffect(() => {
         setUserEmail(JSON.parse(localStorage.getItem("email")));
 
-        if (userEmail == null || userEmail === "") {
-            navigate("/");
-        }
-
         toast(`Please Check your mail!!!`);
     }, []);
 
