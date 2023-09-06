@@ -1,6 +1,6 @@
 # Blog-App-Project
 
-// Dependencies in backend pom.xml
+**// Dependencies in backend pom.xml**
 
 spring-boot-starter-data-jpa       ->  to connect with JPA and maintain persistance
 
@@ -20,7 +20,7 @@ spring-boot-starter-mail 			-> To send Email For Verification
 
 
 
-// Front-End dependencies
+**// Front-End dependencies**
 @mui/material, @mui/icons-material, @emotion/styled, @emotion/react
 
 react-router-dom
