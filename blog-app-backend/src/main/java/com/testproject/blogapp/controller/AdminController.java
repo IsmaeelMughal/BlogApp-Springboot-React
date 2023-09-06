@@ -1,9 +1,6 @@
 package com.testproject.blogapp.controller;
 
-import com.testproject.blogapp.dto.AdminPostEntityDTO;
-import com.testproject.blogapp.dto.ResponseDTO;
-import com.testproject.blogapp.dto.SuggestionEntityDTO;
-import com.testproject.blogapp.dto.UserEntityDTO;
+import com.testproject.blogapp.dto.*;
 import com.testproject.blogapp.model.Role;
 import com.testproject.blogapp.service.AdminService;
 import com.testproject.blogapp.utils.Constants;
@@ -23,6 +20,12 @@ public class AdminController {
     public ResponseDTO<List<UserEntityDTO>> getAllUsersByUserRole(@RequestHeader(Constants.AUTHORIZATION) String authHeader)
     {
         return adminService.getAllUsersByRole(authHeader, Role.ROLE_USER);
+    }
+
+    @GetMapping("/admin/getDetailsOfApp")
+    public ResponseDTO<AppDetailsDTO> getCountDetailsOfApp(@RequestHeader(Constants.AUTHORIZATION) String authHeader)
+    {
+        return adminService.getCountDetails(authHeader);
     }
 
     @GetMapping("/admin/getAllModerators")

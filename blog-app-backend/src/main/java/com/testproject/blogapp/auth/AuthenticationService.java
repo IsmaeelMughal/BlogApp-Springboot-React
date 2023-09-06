@@ -7,6 +7,8 @@ import com.testproject.blogapp.model.UserAccountStatus;
 import com.testproject.blogapp.model.UserEntity;
 import com.testproject.blogapp.repository.UserRepository;
 import com.testproject.blogapp.service.MailService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
@@ -86,23 +89,61 @@ public class AuthenticationService {
         }
     }
 
-    public ResponseDTO<AuthenticationResponse> authenticate(AuthenticationRequest request) {
-        String email = request.getEmail();;
-        String password = request.getPassword();
+    public ResponseDTO<AuthenticationResponse> authenticate(AuthenticationRequest request, HttpServletRequest httpServletRequest) {
+        HttpSession httpSession = httpServletRequest.getSession();
+        Integer attempt = (Integer) httpSession.getAttribute("invalidAttempt");
+        LocalDateTime time = (LocalDateTime) httpSession.getAttribute("timeout");
+        if(attempt != null || time!= null)
+        {
+            if(attempt != null && attempt > 5)
+            {
+                Duration duration = Duration.between(LocalDateTime.now(), time);
+                if (duration.isNegative())
+                {
+                    httpSession.invalidate();
+                }
+                else {
+                    long minutes = duration.toMinutes() % 60;
+                    long seconds = duration.getSeconds() % 60;
+                    return new ResponseDTO<>(null, null, HttpStatus.BAD_REQUEST,
+                            "Please wait for " + minutes + " Minutes and " + seconds + " Seconds!!!");
+                }
+            }
+        }
+        if (attempt == null)
+        {
+            attempt = 0;
+        }
 
+        String email = request.getEmail();
+        String password = request.getPassword();
         Optional<UserEntity> optionalUserEntity = userRepository.findByEmail(email);
         if(optionalUserEntity.isEmpty())
         {
+            attempt = attempt+1;
+            if(attempt >= 5)
+            {
+                httpSession.setAttribute("timeout", LocalDateTime.now().plusMinutes(5));
+            }
+            httpSession.setAttribute("invalidAttempt", attempt);
             return new ResponseDTO<>(null, null, HttpStatus.BAD_REQUEST, "Invalid Credentials!!!");
         }
         try {
             UserEntity userEntity = optionalUserEntity.get();
             if(userEntity.getStatus()==UserAccountStatus.UNVERIFIED)
             {
+                attempt = attempt+1;
+                if(attempt >= 5)
+                {
+                    httpSession.setAttribute("timeout", LocalDateTime.now().plusMinutes(5));
+                }
+                httpSession.setAttribute("invalidAttempt", attempt);
                 return new ResponseDTO<>(null, null, HttpStatus.BAD_REQUEST, "Invalid Credentials!!!");
             }
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             var jwtToken = jwtService.generateToken(userEntity);
+
+            httpSession.invalidate();
             return new ResponseDTO<>(null, new AuthenticationResponse(
                     jwtToken,
                     userEntity.getRole().name()
@@ -110,9 +151,14 @@ public class AuthenticationService {
         }
         catch (Exception e)
         {
+            attempt = attempt+1;
+            if(attempt >= 5)
+            {
+                httpSession.setAttribute("timeout", LocalDateTime.now().plusMinutes(5));
+            }
+            httpSession.setAttribute("invalidAttempt", attempt);
             return new ResponseDTO<>(null, null, HttpStatus.BAD_REQUEST, "Invalid Credentials!!!");
         }
-
     }
 
     public ResponseDTO<String> verifyOtp(String email, int otp) {

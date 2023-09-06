@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -28,6 +28,7 @@ import AdminManageReportedComments from "./pages/AdminPages/AdminManageReportedC
 import OtpVerification from "./components/OtpVerification";
 import EditProfile from "./pages/UserPages/EditProfile";
 import EmailUpdateOtp from "./pages/UserPages/EmailUpdateOtp";
+import PageNotFound from "./components/PageNotFound/PageNotFound";
 
 function App() {
     return (
@@ -94,6 +95,8 @@ function App() {
                     element={<ModeratorSingleReportedPost />}
                 />
             </Route>
+            <Route path="/404" element={<PageNotFound />} />
+            <Route path="*" element={<Navigate to={"/404"} />} />
         </Routes>
     );
 }

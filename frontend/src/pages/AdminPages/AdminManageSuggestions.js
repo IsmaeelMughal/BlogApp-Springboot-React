@@ -221,9 +221,9 @@ function AdminManageSuggestions() {
     }, []);
 
     return (
-        <div className="my-5">
+        <div className="my-5 container">
             <Typography variant="h3" gutterBottom>
-                Suggestions On Your Posts
+                All Suggestions On Posts
             </Typography>
             <ToastContainer />
             <TableContainer component={Paper} className="my-5">

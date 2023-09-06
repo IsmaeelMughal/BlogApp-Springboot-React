@@ -1,9 +1,12 @@
 package com.testproject.blogapp.auth;
 
 import com.testproject.blogapp.dto.ResponseDTO;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestController
@@ -32,10 +35,9 @@ public class AuthenticationController {
 
     @PostMapping("/authenticate")
     public ResponseDTO<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
+            @RequestBody AuthenticationRequest request, HttpServletRequest servletRequest
     )
     {
-        return service.authenticate(request);
+        return service.authenticate(request, servletRequest);
     }
-
 }

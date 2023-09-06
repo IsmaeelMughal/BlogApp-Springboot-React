@@ -20,6 +20,17 @@ public class ModeratorController {
     private final PostService postService;
     private final PostReportService postReportService;
     private final UserService userService;
+
+    @GetMapping("/moderator/getDetails")
+    public ResponseDTO<UserEntityDTO> getUserDetailsFromToken(@RequestHeader(Constants.AUTHORIZATION) String authHeader)
+    {
+        UserEntityDTO userEntityDTO = userService.getUserDetailsFromToken(authHeader);
+        try {
+            return new ResponseDTO<>(userEntityDTO, userEntityDTO, HttpStatus.OK, "User Details!!!");
+        } catch (Exception e) {
+            return new ResponseDTO<>(userEntityDTO, null, HttpStatus.INTERNAL_SERVER_ERROR, "You are not authorized");
+        }
+    }
     @GetMapping("/moderator/posts/unapproved")
     public ResponseDTO<List<PostEntityDTO>> getAllUnapprovedPosts(@RequestHeader(Constants.AUTHORIZATION) String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {

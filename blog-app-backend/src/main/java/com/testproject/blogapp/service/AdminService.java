@@ -1,10 +1,7 @@
 package com.testproject.blogapp.service;
 
 import com.testproject.blogapp.config.JwtService;
-import com.testproject.blogapp.dto.AdminPostEntityDTO;
-import com.testproject.blogapp.dto.ResponseDTO;
-import com.testproject.blogapp.dto.SuggestionEntityDTO;
-import com.testproject.blogapp.dto.UserEntityDTO;
+import com.testproject.blogapp.dto.*;
 import com.testproject.blogapp.model.PostEntity;
 import com.testproject.blogapp.model.Role;
 import com.testproject.blogapp.model.SuggestionEntity;
@@ -28,6 +25,7 @@ public class AdminService {
     private final PostLikeRepository postLikeRepository;
     private final ReportedPostRepository reportedPostRepository;
     private final SuggestionRepository suggestionRepository;
+    private final CommentRepository commentRepository;
     public ResponseDTO<List<UserEntityDTO>> getAllUsersByRole(String authHeader, Role role)
     {
         String jwt = authHeader.substring(7);
@@ -114,5 +112,18 @@ public class AdminService {
             );
         }).toList();
         return new ResponseDTO<>(userEntityDTO, suggestionEntityDTOList, HttpStatus.OK, "List of All Suggestions!!!!");
+    }
+
+    public ResponseDTO<AppDetailsDTO> getCountDetails(String authHeader) {
+        UserEntityDTO userEntityDTO = userService.getUserDetailsFromToken(authHeader);
+        AppDetailsDTO appDetailsDTO = new AppDetailsDTO(
+                postRepository.countOfAllPosts(),
+                commentRepository.countTotalComments(),
+                userRepository.countOfAllUsers(),
+                postLikeRepository.countAllLikesForPost()
+        );
+
+        return new ResponseDTO<>(userEntityDTO, appDetailsDTO, HttpStatus.OK, "App Details!!!");
+
     }
 }

@@ -8,6 +8,7 @@ function ModeratorHeader() {
         localStorage.removeItem("role");
         navigate("/");
     };
+
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">

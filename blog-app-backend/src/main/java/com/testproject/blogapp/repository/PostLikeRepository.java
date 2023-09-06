@@ -17,4 +17,7 @@ public interface PostLikeRepository extends JpaRepository<PostLikeEntity, Intege
 
     @Query("SELECT COUNT(pl) FROM PostLikeEntity pl WHERE pl.postByPostId.id = :postId")
     int countLikesForPost(int postId);
+
+    @Query("SELECT COUNT(pl) FROM PostLikeEntity pl ")
+    int countAllLikesForPost();
 }
