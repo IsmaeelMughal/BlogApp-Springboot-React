@@ -4,23 +4,23 @@ import com.testproject.blogapp.utils.Constants;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "reported_comment", schema = Constants.SCHEMA_NAME)
+//@Table(name = "reported_comment", schema = Constants.SCHEMA_NAME)
 public class ReportedCommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
+//    @Column(name = "id")
     private Integer id;
     @Basic
-    @Column(name = "reason")
+//    @Column(name = "reason")
     private String reason;
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+//    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity userByUserId;
     @ManyToOne
-    @JoinColumn(name = "post_id", referencedColumnName = "id")
+//    @JoinColumn(name = "post_id", referencedColumnName = "id")
     private PostEntity postByPostId;
     @ManyToOne
-    @JoinColumn(name = "comment_id", referencedColumnName = "id")
+//    @JoinColumn(name = "comment_id", referencedColumnName = "id")
     private CommentEntity commentByCommentId;
 
     public Integer getId() {

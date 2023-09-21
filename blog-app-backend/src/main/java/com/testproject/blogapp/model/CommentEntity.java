@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Set;
 
 @Entity
-@Table(name = "comment", schema = Constants.SCHEMA_NAME)
+//@Table(name = "comment", schema = Constants.SCHEMA_NAME)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,16 +19,16 @@ import java.util.Set;
 public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
+//    @Column(name = "id")
     private Integer id;
     @Basic
-    @Column(name = "content", length = 1000)
+//    @Column(name = "content", length = 1000)
     private String content;
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+//    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity userByUserId;
     @ManyToOne
-    @JoinColumn(name = "post_id", referencedColumnName = "id")
+//    @JoinColumn(name = "post_id", referencedColumnName = "id")
     private PostEntity postByPostId;
     @OneToMany(mappedBy = "commentByCommentId", cascade = CascadeType.ALL)
     private Set<CommentLikeEntity> commentLikesById;

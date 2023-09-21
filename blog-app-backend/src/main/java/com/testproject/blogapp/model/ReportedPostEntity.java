@@ -4,17 +4,17 @@ import com.testproject.blogapp.utils.Constants;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "reported_post", schema = Constants.SCHEMA_NAME)
+//@Table(name = "reported_post", schema = Constants.SCHEMA_NAME)
 public class ReportedPostEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
+//    @Column(name = "id")
     private Integer id;
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+//    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity userByUserId;
     @ManyToOne
-    @JoinColumn(name = "post_id", referencedColumnName = "id")
+//    @JoinColumn(name = "post_id", referencedColumnName = "id")
     private PostEntity postByPostId;
 
     public Integer getId() {

@@ -6,29 +6,29 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "suggestion", schema = Constants.SCHEMA_NAME)
+//@Table(name = "suggestion", schema = Constants.SCHEMA_NAME)
 @Getter
 @Setter
 public class SuggestionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
+//    @Column(name = "id")
     private Integer id;
     @Basic
-    @Column(name = "content", length = 1000)
+//    @Column(name = "content", length = 1000)
     private String suggestion;
     @Basic
-    @Column(name = "reply", length = 1000)
+//    @Column(name = "reply", length = 1000)
     private String reply;
     @Basic
-    @Column(name = "status")
+//    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private SuggestionStatus status;
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+//    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity userByUserId;
     @ManyToOne
-    @JoinColumn(name = "post_id", referencedColumnName = "id")
+//    @JoinColumn(name = "post_id", referencedColumnName = "id")
     private PostEntity postByPostId;
 
     public Integer getId() {

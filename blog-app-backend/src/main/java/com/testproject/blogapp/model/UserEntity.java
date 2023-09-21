@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "user", schema = Constants.SCHEMA_NAME)
+//@Table(name = "user", schema = Constants.SCHEMA_NAME)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,30 +22,30 @@ import java.util.Set;
 public class UserEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
+//    @Column(name = "id")
     private Integer id;
     @Basic
-    @Column(name = "name")
+//    @Column(name = "name")
     private String name;
     @Basic
-    @Column(name = "email")
+//    @Column(name = "email")
     private String email;
     @Basic
-    @Column(name = "password")
+//    @Column(name = "password")
     private String password;
     @Basic
-    @Column(name = "role")
+//    @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
     @Basic
-    @Column(name = "status")
+//    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private UserAccountStatus status;
     @Basic
-    @Column(name = "otp")
+//    @Column(name = "otp")
     private Integer otp;
     @Basic
-    @Column(name = "otp_expiration")
+//    @Column(name = "otp_expiration")
     private LocalDateTime otpExpiration;
 
     @OneToMany(mappedBy = "userByUserId", cascade = CascadeType.ALL)

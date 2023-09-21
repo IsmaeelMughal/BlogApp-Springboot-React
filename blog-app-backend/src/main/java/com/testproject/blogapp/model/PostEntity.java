@@ -7,27 +7,27 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
-@Table(name = "post", schema = Constants.SCHEMA_NAME)
+//@Table(name = "post", schema = Constants.SCHEMA_NAME)
 public class PostEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
+//    @Column(name = "id")
     private Integer id;
     @Basic
-    @Column(name = "heading")
+//    @Column(name = "heading")
     private String title;
     @Basic
-    @Column(name = "content", length = 2147483647)
+//    @Column(name = "content", length = 2147483647)
     private String content;
     @Basic
-    @Column(name = "image")
+//    @Column(name = "image")
     private String image;
     @Basic
-    @Column(name = "status")
+//    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private PostStatus postStatus;
     @Basic
-    @Column(name = "date")
+//    @Column(name = "date")
     @Temporal(TemporalType.DATE)
     private Date date;
     @OneToMany(mappedBy = "postByPostId", cascade = CascadeType.ALL)
@@ -35,7 +35,7 @@ public class PostEntity {
     @OneToMany(mappedBy = "postByPostId", cascade = CascadeType.ALL)
     private Set<CommentLikeEntity> commentLikesById;
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+//    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity userByUserId;
     @OneToMany(mappedBy = "postByPostId", cascade = CascadeType.ALL)
     private Set<PostLikeEntity> postLikesById;

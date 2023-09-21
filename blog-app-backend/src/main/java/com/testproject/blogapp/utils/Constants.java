@@ -7,7 +7,7 @@ public class Constants {
     public static final String AUTHORIZATION = "Authorization";
     public static final String SCHEMA_NAME = "blog_app";
     public static final String BEARER = "Bearer ";
-    public static final List<String> CORS_ALLOWED_ORIGINS = List.of("http://localhost:3000");
+    public static final List<String> CORS_ALLOWED_ORIGINS = List.of("http://127.0.0.1:3000", "http://localhost:3000");
     public static final List<String> CORS_ALLOWED_HEADERS = Arrays.asList(
             "Origin", "Access-Control-Allow-Origin", "Content-Type",
             "Accept", "Authorization", "Origin, Accept", "X-Requested-With",
