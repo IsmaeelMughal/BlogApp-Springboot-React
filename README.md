@@ -2,6 +2,8 @@
 
 **// Dependencies in backend pom.xml**
 
+backend-url = http://localhost:8080
+
 spring-boot-starter-data-jpa       ->  to connect with JPA and maintain persistance
 
 spring-boot-starter-web            ->  to add web dependency and making responses
@@ -21,6 +23,9 @@ spring-boot-starter-mail 			-> To send Email For Verification
 
 
 **// Front-End dependencies**
+
+Front-End-url = http://localhost:3000
+
 @mui/material, @mui/icons-material, @emotion/styled, @emotion/react
 
 react-router-dom
